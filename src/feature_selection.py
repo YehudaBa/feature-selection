@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import config as cnfg
 from modeling import benchmark_xgboost
 from time_complexities import O_nd_log_n
-from utils import rename_duplicates, add_count_label, get_methods_dict
+from utils import rename_duplicates, add_count_label, get_methods_dict, time_function, format_duration
 
 
 class FeatureSelection():
@@ -139,7 +139,8 @@ class FeatureSelection():
 
         # Rotate X-axis labels
         plt.xticks(rotation=90, ha="right", fontsize=5)
-        plt.title("Feature Selection Progression")
+        plt.title(f"Feature Selection Progression\n{format_duration(self.run_time)}")
+
         plt.grid(True, linestyle="--", alpha=0.6)
         ax1.set_xticklabels(methods, rotation=45, ha="right", fontsize=7)
         plt.tight_layout()
@@ -148,13 +149,13 @@ class FeatureSelection():
         # Save the plot to the file
         plt.savefig(unique_filename, dpi=300, bbox_inches='tight')
 
-    # Todo: add run time in utils, and add it to plot
-    def run(self):
+    def pipeline(self):
         self.setup_parameters()
         self.get_date()
         self.dims.append(self.X.shape)
         self.run_unsupervised_selections()
         self.run_supervised_selections()
+
+    def run(self):
+        _, self.run_time = time_function(self.pipeline)
         self.plot_feature_selection()
-
-

@@ -1,4 +1,18 @@
+import time
 from algo import regression_methods_dict, classification_methods_dict
+
+def time_function(func, *args, **kwargs):
+    start = time.time()
+    result = func(*args, **kwargs)
+    elapsed = time.time() - start
+    return result, elapsed
+
+def format_duration(seconds):
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    secs = int(seconds % 60)
+    return f"{hours} hours, {minutes} minutes, {secs} seconds"
+
 # ToDo: refactor
 def rename_duplicates(lst):
     counter = {}
