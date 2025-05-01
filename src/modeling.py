@@ -1,64 +1,9 @@
-from sklearn.linear_model import Ridge, Lasso, LogisticRegression
-from sklearn.ensemble import GradientBoostingRegressor, GradientBoostingClassifier
-from sklearn.metrics import mean_squared_error, accuracy_score
+import numpy as np
 import config as cnfg
 import xgboost as xgb
-import numpy as np
-import pandas as pd
-from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler
-
-
 from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import f1_score
-import xgboost as xgb
-import numpy as np
-
-def benchmark_model(X_train, X_test, y_train, y_test, task="regression", model_type="boosting"):
-    """
-    Runs a benchmark model that evaluates all features.
-
-    Parameters:
-    X_train, X_test, y_train, y_test: Train-test split
-    task (str): "regression" or "classification"
-    model_type (str): "ridge", "lasso", "logistic", or "boosting"
-
-    Returns:
-    float: Performance metric (MSE for regression, Accuracy for classification)
-    """
-    if task not in ["regression", "classification"]:
-        raise ValueError("Invalid task type")
-    if task == "regression":
-        if model_type == "ridge":
-            model = Ridge(alpha=0.01)  # Ensures all features are used
-        elif model_type == "lasso":
-            model = Lasso(alpha=0.001)  # Very low alpha to keep most features
-        elif model_type == "boosting":
-            model = GradientBoostingRegressor(n_estimators=100)
-        else:
-            raise ValueError("Invalid model type for regression")
-
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
-        metric = mean_squared_error(y_test, y_pred)
-        print(f"Benchmark Model ({model_type.capitalize()}) MSE: {metric:.4f}")
-
-    elif task == "classification":
-        if model_type == "logistic":
-            model = LogisticRegression(penalty=None, solver='lbfgs', max_iter=1000)
-        elif model_type == "boosting":
-            model = GradientBoostingClassifier(n_estimators=100)
-        else:
-            raise ValueError("Invalid model type for classification")
-
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
-        metric = accuracy_score(y_test, y_pred)
-        print(f"Benchmark Model ({model_type.capitalize()}) Accuracy: {metric:.4f}")
-
-    return metric
+from sklearn.metrics import mean_squared_error, f1_score
 
 
 
@@ -67,6 +12,8 @@ def benchmark_xgboost(X, y, test_size=0.2, n_estimators=100, early_stopping_roun
         return benchmark_xgboost_classification(X, y, test_size, n_estimators, early_stopping_rounds, cv)
     elif cnfg.model_type == "regression":
         return benchmark_xgboost_regression(X, y, test_size, n_estimators, early_stopping_rounds, cv)
+
+# ToDo: refactor
 def benchmark_xgboost_regression(X, y, test_size=0.2, n_estimators=100, early_stopping_rounds=10, cv=5, random_state=42):
     """
     Runs an XGBoost regression benchmark model.
@@ -119,7 +66,7 @@ def benchmark_xgboost_regression(X, y, test_size=0.2, n_estimators=100, early_st
 
     return model, test_rmse, cv_rmse
 
-
+# ToDo: refactor
 def benchmark_xgboost_classification(X, y, test_size=0.2, n_estimators=100, early_stopping_rounds=10, cv=5, random_state=42):
     """
     Runs an XGBoost classification benchmark model.

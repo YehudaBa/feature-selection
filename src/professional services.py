@@ -1,4 +1,3 @@
-
 import os
 import pandas as pd
 
@@ -13,8 +12,7 @@ def get_date(features_path, target_path):
     df_target = pd.read_csv(target_path)
     return preprocess_input(df_features, df_target)
 
-# ToDo: move to professional services
-# the input suppost to contains only one csv and one target col
+# the input supposed to contains only one csv and one target col
 def preprocess_input(df_features, df_target):
     df_features = df_features.set_index("Unnamed: 0").T.reset_index().rename \
         (columns={"index": "samplename"}).rename_axis(None, axis=1)
