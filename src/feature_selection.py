@@ -1,4 +1,5 @@
 import os
+import math
 import uuid
 import numpy as np
 import pandas as pd
@@ -12,14 +13,11 @@ from utils import rename_duplicates, add_count_label, get_methods_dict, time_fun
 
 class FeatureSelection():
     def __init__(self):
-        self.k_features = cnfg.k_features
         self.dims = []
         self.used_methods = []
         self.orig_methods = get_methods_dict(cnfg.model_type)
 
     def setup_parameters(self):
-        if self.k_features is None:
-            self.k_features = np.round(np.sqrt(len(self.X)))
         if cnfg.anomaly_detection:
             self.methods.remove("remove_zero_variance")
         self.methods = self.orig_methods.copy()
@@ -29,6 +27,17 @@ class FeatureSelection():
         self.df_data = pd.read_csv(input_path)
         self.X = self.df_data.drop(cnfg.index_cols + cnfg.drop_cols + [cnfg.target_col], axis=1)
         self.y = self.df_data[cnfg.target_col]
+
+    def set_k_features(self):
+        if cnfg.k_features is not None and cnfg.percent_features is not None:
+            raise ValueError("Only one of k_features or percent_features should be provided.")
+        elif cnfg.k_features is not None:
+            self.k_features = cnfg.k_features
+        elif cnfg.percent_features is not None:
+            self.k_features = int(cnfg.percent_features * self.X.shape[1])
+        else:
+            self.k_features = int(math.sqrt(self.X.shape[1]))
+
 
     def update_dims(self):
         self.dims.append(self.X.shape)
@@ -64,7 +73,7 @@ class FeatureSelection():
             if self.validate_time_complexity(method):
                 print(f"Applying {method}")
                 self.used_methods.append(method)
-                self.X = self.methods[method]["pointer"](self.X, self.y, min_features = cnfg.k_features)
+                self.X = self.methods[method]["pointer"](self.X, self.y, min_features = self.k_features)
                 self.update_dims()
                 del self.methods[method]
                 self.apply_methods()
@@ -99,7 +108,7 @@ class FeatureSelection():
         self.benchmarks = (len(self.used_methods) + 1) * [0] + [1]
         self.used_methods.append(best_method)
         print(f"Applying Benchmark Model {best_method}")
-        self.X = self.methods[best_method]["pointer"](self.X, self.y, min_features=cnfg.k_features, max_features=cnfg.k_features)
+        self.X = self.methods[best_method]["pointer"](self.X, self.y, min_features=self.k_features, max_features=self.k_features)
         self.update_dims()
         del self.methods[best_method]
 
@@ -147,6 +156,7 @@ class FeatureSelection():
     def pipeline(self):
         self.setup_parameters()
         self.get_date()
+        self.set_k_features()
         self.dims.append(self.X.shape)
         self.run_unsupervised_selections()
         self.run_supervised_selections()

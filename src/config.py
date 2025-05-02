@@ -4,7 +4,8 @@
 input_path = "resources/data_PAM50.csv"
 
 ## required number of features in the output
-k_features = 50
+k_features = None
+percent_features = None
 
 ## regression
 # target_col = "Lympho"
@@ -38,3 +39,4 @@ benchmark_model_max_time = 3000000
 
 model_type = "classification"
 # model_type = "regression"
+

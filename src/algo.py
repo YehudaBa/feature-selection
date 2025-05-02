@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 
 
 
-def remove_zero_variance(X, y, threshold=1e-5, min_features=1, max_features=None):
+def remove_zero_variance(X, y, threshold=1e-5, min_features=50, max_features=None):
     """
     Removes columns with variance close to zero from a Pandas DataFrame.
 
@@ -25,7 +25,7 @@ def remove_zero_variance(X, y, threshold=1e-5, min_features=1, max_features=None
 
 
 
-def remove_low_cv_features(X, y=None, threshold=0.1, epsilon=1e-8, min_features=1,
+def remove_low_cv_features(X, y=None, threshold=0.1, epsilon=1e-8, min_features=50,
                            max_features=None, min_retention_ratio=0.5, threshold_decay=0.9):
     """
     Removes features with low coefficient of variation (CV) from a dataset,
@@ -95,7 +95,7 @@ def remove_low_cv_features(X, y=None, threshold=0.1, epsilon=1e-8, min_features=
 
     return X_reduced
 
-def remove_majority_class_features(X, y=None, threshold=0.95, min_features=1,
+def remove_majority_class_features(X, y=None, threshold=0.95, min_features=50,
                                    max_features=None, min_retention_ratio=0.5, threshold_decay=0.95):
     """
     Removes features where a single value dominates, ensuring at least half of the features are retained.
@@ -159,7 +159,7 @@ def remove_majority_class_features(X, y=None, threshold=0.95, min_features=1,
 
     return X_reduced
 
-def select_features_by_mi_threshold(X, y, threshold=0.95, min_features=1,
+def select_features_by_mi_threshold(X, y, threshold=0.95, min_features=50,
                                     max_features=None, min_retention_ratio=0.5,
                                     threshold_decay=0.95):
     """
@@ -229,7 +229,7 @@ def select_features_by_mi_threshold(X, y, threshold=0.95, min_features=1,
     return X_reduced
 
 
-def correlation_based_feature_selection(X, y=None, threshold=0.98, min_features=1,
+def correlation_based_feature_selection(X, y=None, threshold=0.98, min_features=50,
                                         max_features=None, min_retention_ratio=0.5,
                                         threshold_decay=0.98):
     """
@@ -290,7 +290,7 @@ def correlation_based_feature_selection(X, y=None, threshold=0.98, min_features=
 
     return X_reduced
 
-def lasso_feature_selection(X, y, alpha=0.001, min_features=1, max_features=None, min_retention_ratio=0.5, alpha_decay=0.5):
+def lasso_feature_selection(X, y, alpha=0.001, min_features=50, max_features=None, min_retention_ratio=0.5, alpha_decay=0.5):
     """
     Selects features using Lasso regression while ensuring no more than 50% of features are removed.
 
@@ -358,56 +358,15 @@ def lasso_feature_selection(X, y, alpha=0.001, min_features=1, max_features=None
 
     return X_reduced
 
-# ToDo: change the absolute_num_of_features=cnfg.k_features to self.k_features (based on sqrt(n)
-def random_forest_reg_feature_selection(X, y, n_estimators=300, absolute_num_of_features=None, required_percent=None,
-                                        min_features=50, max_features=None):
-    """
-    Selects features based on importance scores from a trained Random Forest Regressor.
-
-    Parameters:
-    -----------
-    X : pandas.DataFrame
-        Input feature matrix. Assumes all features are numeric.
-    y : array-like
-        Target variable for regression.
-    n_estimators : int, optional (default=300)
-        Number of trees in the random forest.
-    absolute_num_of_features : int or None, optional
-        Absolute number of top features to select. If None, this criterion is ignored.
-    required_percent : float or None, optional
-        Proportion (between 0 and 1) of total features to retain based on importance. If None, this criterion is ignored.
-    min_features : int, optional (default=50)
-        Minimum number of features to retain.
-    max_features : int or None, optional
-        Maximum number of features to retain. If None, no upper limit is enforced.
-
-    Returns:
-    --------
-    pandas.DataFrame
-        A DataFrame containing the selected features based on their importance scores from the Random Forest model.
-
-    Notes:
-    ------
-    - Feature importances are derived from a trained RandomForestRegressor model.
-    - Features are ranked in descending order of importance.
-    - The number of features retained is determined by the maximum of:
-        - `absolute_num_of_features`,
-        - `required_percent` of total features,
-        - half of the original feature count,
-        - and at least `min_features`.
-    - The number of selected features is capped by `max_features` if provided.
-    - Prints the number and percentage of selected features.
-    """
-    rf = RandomForestRegressor(n_estimators=n_estimators, random_state=42, n_jobs=-1)
-    rf.fit(X, y)
+def filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features):
     feature_importances = rf.feature_importances_
     sorted_idx = np.argsort(feature_importances)[::-1]
     sorted_features = X.columns[sorted_idx]
     sorted_importances = feature_importances[sorted_idx]
     total_features = len(sorted_importances)
-    percent_based_count = int(total_features * required_percent) if required_percent is not None else 0
-    absolute_based_count = absolute_num_of_features if absolute_num_of_features is not None else 0
-    num_features_to_keep = max(min_features, max(percent_based_count, absolute_based_count, total_features // 2))
+    n_total_features = X.shape[1]
+    num_features_to_keep = max(int(n_total_features * min_retention_ratio), min_features)
+
     if max_features is not None:
         num_features_to_keep = min(num_features_to_keep, max_features)
     num_features_to_keep = max(1, min(num_features_to_keep, total_features))
@@ -415,75 +374,21 @@ def random_forest_reg_feature_selection(X, y, n_estimators=300, absolute_num_of_
 
     print(
         f"Selected features: {len(selected_features)} out of {total_features} ({(len(selected_features) / total_features) * 100:.1f}%)")
-
     return X[selected_features]
+
+def random_forest_reg_feature_selection(X, y, n_estimators=300, min_features=50, max_features=None, min_retention_ratio=0.5):
+    rf = RandomForestRegressor(n_estimators=n_estimators, random_state=42, n_jobs=-1)
+    rf.fit(X, y)
+    return filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features)
 
 
 def random_forest_clf_feature_selection(X, y, n_estimators=300,
-                                        absolute_num_of_features=None,
-                                        required_percent=None,
                                         min_features=50,
-                                        max_features=None):
-    """
-    Selects features based on importance scores from a trained Random Forest Classifier.
+                                        max_features=None, min_retention_ratio=0.5):
 
-    Parameters:
-    -----------
-    X : pandas.DataFrame
-        Input feature matrix. Assumes all features are numeric.
-    y : array-like
-        Target variable for classification.
-    n_estimators : int, optional (default=300)
-        Number of trees in the random forest.
-    absolute_num_of_features : int or None, optional
-        Absolute number of top features to select. If None, this criterion is ignored.
-    required_percent : float or None, optional
-        Proportion (between 0 and 1) of total features to retain based on importance. If None, this criterion is ignored.
-    min_features : int, optional (default=50)
-        Minimum number of features to retain.
-    max_features : int or None, optional
-        Maximum number of features to retain. If None, no upper limit is enforced.
-
-    Returns:
-    --------
-    pandas.DataFrame
-        A DataFrame containing the selected features based on their importance scores from the Random Forest model.
-
-    Notes:
-    ------
-    - Feature importances are computed from a trained RandomForestClassifier model.
-    - Features are ranked in descending order of importance.
-    - The number of features retained is determined by the maximum of:
-        - `absolute_num_of_features`
-        - `required_percent` of total features
-        - half of the original feature count
-        - and at least `min_features`
-    - The number of selected features is capped by `max_features` if provided.
-    - Prints the number and percentage of selected features.
-    """
     rf = RandomForestClassifier(n_estimators=n_estimators, random_state=42, n_jobs=-1)
     rf.fit(X, y)
-    feature_importances = rf.feature_importances_
-    sorted_idx = np.argsort(feature_importances)[::-1]
-    sorted_features = X.columns[sorted_idx]
-    sorted_importances = feature_importances[sorted_idx]
-
-    total_features = len(sorted_importances)
-    percent_based_count = int(total_features * required_percent) if required_percent is not None else 0
-    absolute_based_count = absolute_num_of_features if absolute_num_of_features is not None else 0
-
-    num_features_to_keep = max(min_features, max(percent_based_count, absolute_based_count, total_features // 2))
-    if max_features is not None:
-        num_features_to_keep = min(num_features_to_keep, max_features)
-    num_features_to_keep = max(1, min(num_features_to_keep, total_features))
-
-    selected_features = sorted_features[:num_features_to_keep]
-
-    print(
-        f"Selected features: {len(selected_features)} out of {total_features} ({(len(selected_features) / total_features) * 100:.1f}%)")
-
-    return X[selected_features]
-
+    return filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features)
 
 
 
