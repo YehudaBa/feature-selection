@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 import config as cnfg
 from modeling import benchmark_xgboost
-from time_complexities import O_nd_log_n
+from time_complexities import O_ndT
 from utils import rename_duplicates, add_count_label, get_methods_dict, time_function, format_duration
 
 
@@ -57,7 +57,7 @@ class FeatureSelection():
         # check if we can already run the benchmark model
         # dimensions reduced enough for time complexity
         # and at least 4 models run before benchmark (if they could)
-        tc = O_nd_log_n(self.dims[-1][0], self.dims[-1][1])
+        tc = O_ndT(self.dims[-1][0], self.dims[-1][1])
         if (tc <= cnfg.benchmark_model_max_time) & (
                 self.dims[-1][1] < self.dims[0][1] / 4):
             return True

@@ -1,5 +1,3 @@
-# ToDo fix the complexity times in xgboost and random forest based on the number of trees and depth
-
 import numpy as np
 
 def O_nd(n, d):
@@ -13,6 +11,13 @@ def O_d2(n ,d):
 
 def O_nd_log_n(n, d):
     return int(n*d*np.log(n))
+
+def O_nd_log_n_T(n, d, T = 300):
+    return int(T*n*d*np.log(n))
+
+
+def O_ndT(n, d, T=100):
+    return n * d * T
 
 
 
