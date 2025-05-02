@@ -70,22 +70,17 @@ class FeatureSelection():
                 self.apply_methods()
                 return
 
-    # ToDo: refactor
     def benchmark_model(self):
         methods_cost = {}
         best_key = None
         for method in [x for x in self.methods.keys() if x != "remove_zero_variance"]:
-            print(f"Applying Benchmark Model {method}")
             if self.validate_time_complexity(method):
-                # self.used_methods.append(method)
                 X = self.methods[method]["pointer"](self.X, self.y)
                 _, methods_cost[method], _ = benchmark_xgboost(X, self.y.copy())
                 if cnfg.model_type == "classification":
                     best_key = min(methods_cost, key=methods_cost.get)
                 else:
                     best_key = max(methods_cost, key=methods_cost.get)
-                best_value = methods_cost[best_key]
-                # ToDo: show min_value
         return best_key
 
     def run_unsupervised_selections(self):
@@ -103,11 +98,11 @@ class FeatureSelection():
         best_method = self.benchmark_model()
         self.benchmarks = (len(self.used_methods) + 1) * [0] + [1]
         self.used_methods.append(best_method)
+        print(f"Applying Benchmark Model {best_method}")
         self.X = self.methods[best_method]["pointer"](self.X, self.y, min_features=cnfg.k_features, max_features=cnfg.k_features)
         self.update_dims()
         del self.methods[best_method]
 
-    # ToDo: refactor
     def plot_feature_selection(self):
         """
         Plots the feature selection process:

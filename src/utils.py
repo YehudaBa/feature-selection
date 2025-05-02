@@ -13,24 +13,22 @@ def format_duration(seconds):
     secs = int(seconds % 60)
     return f"{hours} hours, {minutes} minutes, {secs} seconds"
 
-# ToDo: refactor
 def rename_duplicates(lst):
     counter = {}
     result = []
-
     for item in lst:
         counter[item] = counter.get(item, 0) + 1
         result.append(f"{item}_{counter[item]}")
 
     return result
-# ToDo: refactor
+
 def add_count_label(lst, lst_count):
     result = []
     for i in range(len(lst)):
         result.append(f"{lst[i]}\n{lst_count[i]} features")
 
     return result
-# ToDo: refactor
+
 def get_methods_dict(model_type):
     if model_type == "classification":
         return classification_methods_dict

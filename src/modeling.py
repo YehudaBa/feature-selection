@@ -13,7 +13,6 @@ def benchmark_xgboost(X, y, test_size=0.2, n_estimators=100, early_stopping_roun
     elif cnfg.model_type == "regression":
         return benchmark_xgboost_regression(X, y, test_size, n_estimators, early_stopping_rounds, cv)
 
-# ToDo: refactor
 def benchmark_xgboost_regression(X, y, test_size=0.2, n_estimators=100, early_stopping_rounds=10, cv=5, random_state=42):
     """
     Runs an XGBoost regression benchmark model.
@@ -32,41 +31,32 @@ def benchmark_xgboost_regression(X, y, test_size=0.2, n_estimators=100, early_st
     - test_rmse (float): Root Mean Squared Error on the test set.
     - cv_rmse (float): Cross-validation RMSE score.
     """
-    # Split dataset into train and test
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
 
-    # Standardize features (optional but improves stability)
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    # Define XGBoost model
     model = xgb.XGBRegressor(
         n_estimators=n_estimators,
-        objective="reg:squarederror",  # Regression objective
+        objective="reg:squarederror",
         eval_metric="rmse",
-        tree_method="hist",  # Efficient histogram-based splits
-        # early_stopping_rounds=early_stopping_rounds,
+        tree_method="hist",
         random_state=random_state
     )
 
-    # Train with early stopping
     model.fit(X_train_scaled, y_train, eval_set=[(X_test_scaled, y_test)], verbose=False)
 
-    # Predict on test data
     y_pred = model.predict(X_test_scaled)
     test_rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 
-    # Perform cross-validation
     cv_scores = cross_val_score(model, X_train_scaled, y_train, cv=cv, scoring="neg_mean_squared_error")
     cv_rmse = np.sqrt(-cv_scores.mean())
 
     print(f"Test RMSE: {test_rmse:.4f}")
     print(f"Cross-Validation RMSE: {cv_rmse:.4f}")
-
     return model, test_rmse, cv_rmse
 
-# ToDo: refactor
 def benchmark_xgboost_classification(X, y, test_size=0.2, n_estimators=100, early_stopping_rounds=10, cv=5, random_state=42):
     """
     Runs an XGBoost classification benchmark model.
@@ -85,31 +75,24 @@ def benchmark_xgboost_classification(X, y, test_size=0.2, n_estimators=100, earl
     - test_f1 (float): F1 score on the test set.
     - cv_f1 (float): Cross-validation F1 score.
     """
-    # Split dataset into train and test
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
 
-    # Standardize features (optional but improves stability)
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
 
-    # Define XGBoost model
     model = xgb.XGBClassifier(
         n_estimators=n_estimators,
-        objective="binary:logistic",  # Binary classification objective
-        eval_metric="logloss",# Logloss is commonly used for classification
-        # early_stopping_rounds=early_stopping_rounds,
+        objective="binary:logistic",
+        eval_metric="logloss",
         random_state=random_state
     )
 
-    # Train with early stopping
     model.fit(X_train_scaled, y_train, eval_set=[(X_test_scaled, y_test)], verbose=False)
 
-    # Predict on test data
     y_pred = model.predict(X_test_scaled)
     test_f1 = f1_score(y_test, y_pred)
 
-    # Perform cross-validation
     cv_scores = cross_val_score(model, X_train_scaled, y_train, cv=cv, scoring="f1")
     cv_f1 = cv_scores.mean()
 
