@@ -1,7 +1,6 @@
 import os
 import math
 import uuid
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -12,23 +11,41 @@ from utils import rename_duplicates, add_count_label, get_methods_dict, time_fun
 
 
 class FeatureSelection():
+    """
+    A class to perform feature selection using various unsupervised and supervised methods.
+
+    Attributes:
+        dims (list): Stores the dimensions of the feature matrix at different stages.
+        used_methods (list): Stores the names of methods applied during feature selection.
+        orig_methods (dict): Stores the original methods dictionary based on the model type.
+    """
     def __init__(self):
         self.dims = []
         self.used_methods = []
         self.orig_methods = get_methods_dict(cnfg.model_type)
 
     def setup_parameters(self):
+        """
+        Sets up the parameters for feature selection based on the configuration.
+        """
         if cnfg.anomaly_detection:
             self.methods.remove("remove_zero_variance")
         self.methods = self.orig_methods.copy()
 
     def get_date(self):
+        """
+        Loads the dataset and splits it into features (X) and target (y) based on the configuration.
+        """
         input_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), cnfg.input_path)
         self.df_data = pd.read_csv(input_path)
         self.X = self.df_data.drop(cnfg.index_cols + cnfg.drop_cols + [cnfg.target_col], axis=1)
         self.y = self.df_data[cnfg.target_col]
 
     def set_k_features(self):
+        """
+        Sets the target number of features (k_features) based on the configuration.
+        Ensures only one of `k_features` or `percent_features` is provided.
+        """
         if cnfg.k_features is not None and cnfg.percent_features is not None:
             raise ValueError("Only one of k_features or percent_features should be provided.")
         elif cnfg.k_features is not None:
@@ -40,23 +57,45 @@ class FeatureSelection():
 
 
     def update_dims(self):
+        """
+        Updates the dimensions list with the current shape of the feature matrix.
+        """
         self.dims.append(self.X.shape)
 
     def validate_time_complexity(self, method):
+        """
+        Validates if the time complexity of a method is within the allowed limit.
+
+        Parameters:
+            method (str): The name of the method to validate.
+
+        Returns:
+            bool: True if the method's time complexity is valid, False otherwise.
+        """
         if self.methods[method]["time_complexity"](*self.dims[-1]) <= cnfg.time_complexities[
             self.methods[method]["index_method"]]:
             return True
 
     def is_reduction_goal_met(self):
+        """
+        Checks if the feature reduction goal has been met.
 
+        Returns:
+            bool: True if the reduction goal is met, False otherwise.
+        """
         if self.X.shape[1] <= self.k_features:
             print(f"Reduction goal met, stopping feature selection.")
             return True
+        return False
 
     def can_run_benchmark_model(self):
-        # check if we can already run the benchmark model
-        # dimensions reduced enough for time complexity
-        # and at least 4 models run before benchmark (if they could)
+        """
+        Checks if the benchmark model can be run based on time complexity and feature reduction:
+        - dimensions reduced enough for time complexity
+        - least 4 models run before benchmark (if they could)
+        Returns:
+            bool: True if the benchmark model can be run, False otherwise.
+        """
         tc = O_ndT(self.dims[-1][0], self.dims[-1][1])
         if (tc <= cnfg.benchmark_model_max_time) & (
                 self.dims[-1][1] < self.dims[0][1] / 4):
@@ -65,6 +104,10 @@ class FeatureSelection():
             return False
 
     def apply_methods(self):
+        """
+        Applies feature selection methods iteratively until the reduction goal is met
+        or the benchmark model can be run.
+        """
         for method in self.methods.keys():
             if self.is_reduction_goal_met():
                 return
@@ -80,6 +123,12 @@ class FeatureSelection():
                 return
 
     def benchmark_model(self):
+        """
+        Runs the benchmark model to determine the best feature selection method.
+
+        Returns:
+            str: The name of the best feature selection method.
+        """
         methods_cost = {}
         best_key = None
         for method in [x for x in self.methods.keys() if x != "remove_zero_variance"]:
@@ -93,6 +142,9 @@ class FeatureSelection():
         return best_key
 
     def run_unsupervised_selections(self):
+        """
+        Runs unsupervised feature selection methods iteratively until no further reduction is achieved.
+        """
         tmp_dim = self.X.shape[1]
         self.apply_methods()
         while tmp_dim != self.X.shape[1]:
@@ -101,6 +153,9 @@ class FeatureSelection():
             self.apply_methods()
 
     def run_supervised_selections(self):
+        """
+        Runs supervised feature selection methods using the benchmark model.
+        """
         if self.is_reduction_goal_met():
             return
         self.methods = self.orig_methods.copy()
@@ -114,10 +169,9 @@ class FeatureSelection():
 
     def plot_feature_selection(self):
         """
-        Plots the feature selection process:
-        - X-axis: Feature selection methods used
-        - Left Y-axis: Remaining number of features (dims)
-        - Right Y-axis: Time complexity (tcs)
+        Plots the progression of feature selection, showing the number of features and time complexity.
+
+        Saves the plot as a PNG file with a unique name.
         """
         methods = ["orig_dim"] + self.used_methods
         dims = [x[1] for x in self.dims]
@@ -154,6 +208,10 @@ class FeatureSelection():
         plt.savefig(unique_filename, dpi=300, bbox_inches='tight')
 
     def pipeline(self):
+        """
+        Executes the entire feature selection pipeline, including parameter setup,
+        data loading, unsupervised and supervised selections.
+        """
         self.setup_parameters()
         self.get_date()
         self.set_k_features()
@@ -162,5 +220,10 @@ class FeatureSelection():
         self.run_supervised_selections()
 
     def run(self):
+        """
+        Runs the feature selection pipeline and plots the results.
+
+        Measures the total runtime of the pipeline.
+        """
         _, self.run_time = time_function(self.pipeline)
         self.plot_feature_selection()

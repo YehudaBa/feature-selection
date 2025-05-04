@@ -11,14 +11,17 @@ from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 
 def remove_zero_variance(X, y, threshold=1e-5, min_features=50, max_features=None):
     """
-    Removes columns with variance close to zero from a Pandas DataFrame.
+    Removes features with zero or near-zero variance.
 
     Parameters:
-        X (pd.DataFrame): The input DataFrame.
-        threshold (float): Variance threshold below which columns are dropped.
-    min_features and max_features are just the stucture, 
+        X (pd.DataFrame or np.ndarray): Feature matrix.
+        y (pd.Series or np.ndarray): Target variable (not used in this function).
+        threshold (float): Variance threshold below which features are removed.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+
     Returns:
-        pd.DataFrame: The DataFrame with low-variance columns removed.
+        pd.DataFrame: Reduced feature matrix.
     """
     variances = X.var()  # Compute variance for each column
     return X.loc[:, variances > threshold]  # Keep columns with variance above the threshold
@@ -28,33 +31,21 @@ def remove_zero_variance(X, y, threshold=1e-5, min_features=50, max_features=Non
 def remove_low_cv_features(X, y=None, threshold=0.1, epsilon=1e-8, min_features=50,
                            max_features=None, min_retention_ratio=0.5, threshold_decay=0.9):
     """
-    Removes features with low coefficient of variation (CV) from a dataset,
-    ensuring that no more than 50% of features are removed.
+     Removes features with low coefficient of variation (CV).
 
-    Parameters:
-    -----------
-    X : pandas.DataFrame or numpy.ndarray
-        Input feature matrix.
-    y : Ignored
-        Included for compatibility with scikit-learn-style function signatures.
-    threshold : float, optional
-        Initial CV threshold to remove low-variation features.
-    epsilon : float, optional
-        Small value added to mean to avoid division by zero.
-    min_features : int, optional
-        Minimum number of features to keep.
-    max_features : int or None, optional
-        Maximum number of features to keep.
-    min_retention_ratio : float, optional
-        Minimum ratio of features to retain (default is 0.5).
-    threshold_decay : float, optional
-        Decay factor for threshold if too many features are removed.
+     Parameters:
+         X (pd.DataFrame or np.ndarray): Feature matrix.
+         y (pd.Series or np.ndarray, optional): Target variable (not used in this function).
+         threshold (float): Initial CV threshold.
+         epsilon (float): Small value to avoid division by zero.
+         min_features (int): Minimum number of features to retain.
+         max_features (int, optional): Maximum number of features to retain.
+         min_retention_ratio (float): Minimum ratio of features to retain.
+         threshold_decay (float): Decay factor for the CV threshold.
 
-    Returns:
-    --------
-    pandas.DataFrame
-        DataFrame with selected features.
-    """
+     Returns:
+         pd.DataFrame: Reduced feature matrix.
+     """
     if isinstance(X, np.ndarray):
         X = pd.DataFrame(X)
 
@@ -98,30 +89,20 @@ def remove_low_cv_features(X, y=None, threshold=0.1, epsilon=1e-8, min_features=
 def remove_majority_class_features(X, y=None, threshold=0.95, min_features=50,
                                    max_features=None, min_retention_ratio=0.5, threshold_decay=0.95):
     """
-    Removes features where a single value dominates, ensuring at least half of the features are retained.
+     Removes features dominated by a single class.
 
-    Parameters:
-    -----------
-    X : pandas.DataFrame or numpy.ndarray
-        Input feature matrix.
-    y : Ignored
-        Included for compatibility with scikit-learn-style function signatures.
-    threshold : float, optional
-        Initial threshold for the maximum allowed proportion of the most frequent value.
-    min_features : int, optional
-        Minimum number of features to retain.
-    max_features : int or None, optional
-        Maximum number of features to retain.
-    min_retention_ratio : float, optional
-        Minimum ratio of features to keep (default is 0.5).
-    threshold_decay : float, optional
-        Factor to reduce threshold by if too many features are removed.
+     Parameters:
+         X (pd.DataFrame or np.ndarray): Feature matrix.
+         y (pd.Series or np.ndarray, optional): Target variable (not used in this function).
+         threshold (float): Proportion threshold for majority class.
+         min_features (int): Minimum number of features to retain.
+         max_features (int, optional): Maximum number of features to retain.
+         min_retention_ratio (float): Minimum ratio of features to retain.
+         threshold_decay (float): Decay factor for the threshold.
 
-    Returns:
-    --------
-    pandas.DataFrame
-        DataFrame containing selected features.
-    """
+     Returns:
+         pd.DataFrame: Reduced feature matrix.
+     """
     if isinstance(X, np.ndarray):
         X = pd.DataFrame(X)
 
@@ -163,30 +144,19 @@ def select_features_by_mi_threshold(X, y, threshold=0.95, min_features=50,
                                     max_features=None, min_retention_ratio=0.5,
                                     threshold_decay=0.95):
     """
-    Selects features based on their mutual information (MI) with the target,
-    while ensuring no more than 50% of features are removed.
+    Selects features based on mutual information (MI) threshold.
 
     Parameters:
-    -----------
-    X : pandas.DataFrame or numpy.ndarray
-        Input feature matrix.
-    y : array-like
-        Target variable.
-    threshold : float
-        Initial cumulative MI threshold for feature selection.
-    min_features : int
-        Minimum number of features to retain.
-    max_features : int or None
-        Maximum number of features to retain.
-    min_retention_ratio : float
-        Minimum proportion of original features to retain.
-    threshold_decay : float
-        Decay factor for threshold if too many features are removed.
+        X (pd.DataFrame or np.ndarray): Feature matrix.
+        y (pd.Series or np.ndarray): Target variable.
+        threshold (float): Cumulative MI threshold.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+        min_retention_ratio (float): Minimum ratio of features to retain.
+        threshold_decay (float): Decay factor for the MI threshold.
 
     Returns:
-    --------
-    pandas.DataFrame
-        Reduced DataFrame with selected features.
+        pd.DataFrame: Reduced feature matrix.
     """
     if isinstance(X, np.ndarray):
         X = pd.DataFrame(X)
@@ -233,29 +203,19 @@ def correlation_based_feature_selection(X, y=None, threshold=0.98, min_features=
                                         max_features=None, min_retention_ratio=0.5,
                                         threshold_decay=0.98):
     """
-    Removes highly correlated features, adaptively adjusting the threshold to retain enough features.
+    Removes highly correlated features.
 
     Parameters:
-    -----------
-    X : pandas.DataFrame
-        Input feature matrix. Assumes numerical data.
-    y : Ignored
-        Included for compatibility with scikit-learn-style function signatures.
-    threshold : float
-        Initial correlation threshold above which one of the correlated feature pairs is dropped.
-    min_features : int
-        Minimum number of features to retain.
-    max_features : int or None
-        Maximum number of features to retain.
-    min_retention_ratio : float
-        Minimum proportion of features to retain (default 0.5).
-    threshold_decay : float
-        Multiplicative factor to reduce threshold if too many features are dropped.
+        X (pd.DataFrame or np.ndarray): Feature matrix.
+        y (pd.Series or np.ndarray, optional): Target variable (not used in this function).
+        threshold (float): Correlation threshold.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+        min_retention_ratio (float): Minimum ratio of features to retain.
+        threshold_decay (float): Decay factor for the correlation threshold.
 
     Returns:
-    --------
-    pandas.DataFrame
-        DataFrame with reduced features after removing highly correlated ones.
+        pd.DataFrame: Reduced feature matrix.
     """
     if isinstance(X, np.ndarray):
         X = pd.DataFrame(X)
@@ -292,29 +252,19 @@ def correlation_based_feature_selection(X, y=None, threshold=0.98, min_features=
 
 def lasso_feature_selection(X, y, alpha=0.001, min_features=50, max_features=None, min_retention_ratio=0.5, alpha_decay=0.5):
     """
-    Selects features using Lasso regression while ensuring no more than 50% of features are removed.
+    Selects features using Lasso regression.
 
     Parameters:
-    -----------
-    X : pandas.DataFrame or numpy.ndarray
-        Input feature matrix.
-    y : array-like
-        Target variable.
-    alpha : float, optional
-        Initial regularization strength.
-    min_features : int, optional
-        Minimum number of features to retain.
-    max_features : int or None, optional
-        Maximum number of features to retain.
-    min_retention_ratio : float, optional
-        Minimum ratio of features to retain (e.g., 0.5 means keep at least 50%).
-    alpha_decay : float, optional
-        Factor to reduce alpha by if too many features are removed.
+        X (pd.DataFrame or np.ndarray): Feature matrix.
+        y (pd.Series or np.ndarray): Target variable.
+        alpha (float): Regularization strength.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+        min_retention_ratio (float): Minimum ratio of features to retain.
+        alpha_decay (float): Decay factor for the alpha parameter.
 
     Returns:
-    --------
-    pandas.DataFrame
-        Reduced feature set.
+        pd.DataFrame: Reduced feature matrix.
     """
     if isinstance(X, np.ndarray):
         X = pd.DataFrame(X)
@@ -359,11 +309,24 @@ def lasso_feature_selection(X, y, alpha=0.001, min_features=50, max_features=Non
     return X_reduced
 
 def filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features):
-    feature_importances = rf.feature_importances_
-    sorted_idx = np.argsort(feature_importances)[::-1]
+    """
+    Filters features based on Random Forest feature importance.
+
+    Parameters:
+        rf (RandomForestClassifier or RandomForestRegressor): Trained Random Forest model.
+        X (pd.DataFrame): Feature matrix.
+        min_retention_ratio (float): Minimum ratio of features to retain.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+
+    Returns:
+        pd.DataFrame: Reduced feature matrix.
+    """
+    feature_importance = rf.feature_importances_
+    sorted_idx = np.argsort(feature_importance)[::-1]
     sorted_features = X.columns[sorted_idx]
-    sorted_importances = feature_importances[sorted_idx]
-    total_features = len(sorted_importances)
+    sorted_importance = feature_importance[sorted_idx]
+    total_features = len(sorted_importance)
     n_total_features = X.shape[1]
     num_features_to_keep = max(int(n_total_features * min_retention_ratio), min_features)
 
@@ -377,6 +340,20 @@ def filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_
     return X[selected_features]
 
 def random_forest_reg_feature_selection(X, y, n_estimators=300, min_features=50, max_features=None, min_retention_ratio=0.5):
+    """
+    Selects features using a Random Forest regressor.
+
+    Parameters:
+        X (pd.DataFrame or np.ndarray): Feature matrix.
+        y (pd.Series or np.ndarray): Target variable.
+        n_estimators (int): Number of trees in the Random Forest.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+        min_retention_ratio (float): Minimum ratio of features to retain.
+
+    Returns:
+        pd.DataFrame: Reduced feature matrix.
+    """
     rf = RandomForestRegressor(n_estimators=n_estimators, random_state=42, n_jobs=-1)
     rf.fit(X, y)
     return filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features)
@@ -386,6 +363,20 @@ def random_forest_clf_feature_selection(X, y, n_estimators=300,
                                         min_features=50,
                                         max_features=None, min_retention_ratio=0.5):
 
+    """
+    Selects features using a Random Forest classifier.
+
+    Parameters:
+        X (pd.DataFrame or np.ndarray): Feature matrix.
+        y (pd.Series or np.ndarray): Target variable.
+        n_estimators (int): Number of trees in the Random Forest.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+        min_retention_ratio (float): Minimum ratio of features to retain.
+
+    Returns:
+        pd.DataFrame: Reduced feature matrix.
+    """
     rf = RandomForestClassifier(n_estimators=n_estimators, random_state=42, n_jobs=-1)
     rf.fit(X, y)
     return filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features)

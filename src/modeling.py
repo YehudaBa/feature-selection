@@ -8,6 +8,20 @@ from sklearn.metrics import mean_squared_error, f1_score
 
 
 def benchmark_xgboost(X, y, test_size=0.2, n_estimators=100, early_stopping_rounds=10, cv=5):
+    """
+    Runs an XGBoost benchmark model for either classification or regression based on the configuration.
+
+    Parameters:
+        X (pd.DataFrame or np.array): Feature matrix.
+        y (pd.Series or np.array): Target variable.
+        test_size (float): Proportion of data for the test set.
+        n_estimators (int): Number of boosting rounds.
+        early_stopping_rounds (int): Stops training if validation score doesn't improve.
+        cv (int): Number of cross-validation folds.
+
+    Returns:
+        tuple: Results from the appropriate benchmark function (classification or regression).
+    """
     if cnfg.model_type == "classification":
         return benchmark_xgboost_classification(X, y, test_size, n_estimators, early_stopping_rounds, cv)
     elif cnfg.model_type == "regression":
@@ -18,18 +32,16 @@ def benchmark_xgboost_regression(X, y, test_size=0.2, n_estimators=100, early_st
     Runs an XGBoost regression benchmark model.
 
     Parameters:
-    - X (pd.DataFrame or np.array): Feature matrix.
-    - y (pd.Series or np.array): Target variable.
-    - test_size (float): Proportion of data for the test set.
-    - n_estimators (int): Number of boosting rounds.
-    - early_stopping_rounds (int): Stops training if validation score doesn't improve.
-    - cv (int): Number of cross-validation folds.
-    - random_state (int): Random seed for reproducibility.
+        X (pd.DataFrame or np.array): Feature matrix.
+        y (pd.Series or np.array): Target variable.
+        test_size (float): Proportion of data for the test set.
+        n_estimators (int): Number of boosting rounds.
+        early_stopping_rounds (int): Stops training if validation score doesn't improve.
+        cv (int): Number of cross-validation folds.
+        random_state (int): Random seed for reproducibility.
 
     Returns:
-    - model (XGBRegressor): Trained XGBoost model.
-    - test_rmse (float): Root Mean Squared Error on the test set.
-    - cv_rmse (float): Cross-validation RMSE score.
+        tuple: Trained XGBoost model, test RMSE, and cross-validation RMSE.
     """
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
 
@@ -62,18 +74,16 @@ def benchmark_xgboost_classification(X, y, test_size=0.2, n_estimators=100, earl
     Runs an XGBoost classification benchmark model.
 
     Parameters:
-    - X (pd.DataFrame or np.array): Feature matrix.
-    - y (pd.Series or np.array): Target variable.
-    - test_size (float): Proportion of data for the test set.
-    - n_estimators (int): Number of boosting rounds.
-    - early_stopping_rounds (int): Stops training if validation score doesn't improve.
-    - cv (int): Number of cross-validation folds.
-    - random_state (int): Random seed for reproducibility.
+        X (pd.DataFrame or np.array): Feature matrix.
+        y (pd.Series or np.array): Target variable.
+        test_size (float): Proportion of data for the test set.
+        n_estimators (int): Number of boosting rounds.
+        early_stopping_rounds (int): Stops training if validation score doesn't improve.
+        cv (int): Number of cross-validation folds.
+        random_state (int): Random seed for reproducibility.
 
     Returns:
-    - model (XGBClassifier): Trained XGBoost model.
-    - test_f1 (float): F1 score on the test set.
-    - cv_f1 (float): Cross-validation F1 score.
+        tuple: Trained XGBoost model, test F1 score, and cross-validation F1 score.
     """
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
 
