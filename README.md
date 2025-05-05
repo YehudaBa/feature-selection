@@ -78,7 +78,7 @@ If both are `None`, the default is `sqrt(n_samples)`.
 #### Model Type
 
 - **`model_type`** *(str)*: Type of task to solve — must be either `"classification"` or `"regression"`.
-- **`Anomaly Detection (Not yet supported)`** *(bool)*: Currently ignored. Placeholder for future development.
+- **`Anomaly Detection (Not yet supported)`** *(bool)*: Currently support only False. Placeholder for future development.
 
 ---
 
