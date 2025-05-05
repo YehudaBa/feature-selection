@@ -25,14 +25,21 @@ The framework is designed to be modular, extensible, and applicable to both clas
 ToDo
 
 ## Usage
-
-### Configuration:
-
 All configuration parameters are defined in the `config.py` file.
+
+---
+
+### Configuration
+
+This section defines all required and optional parameters for running the feature selection pipeline.
+
+#### Input Location
+
+- `input_path` *(str)*: Path to the input data file (e.g., CSV or Parquet).
 
 #### Input Format
 
-The input data must be in a tabular format and include:
+The input data must follow this structure:
 
 - **Target column**: A single column containing the prediction target (classification or regression).
 - **Optional columns**:
