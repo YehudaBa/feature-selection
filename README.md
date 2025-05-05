@@ -10,7 +10,6 @@ A master's thesis project exploring an ensemble approach to feature selection, c
 - [Usage](#usage)
 - [Methodology](#methodology)
 - [Results](#results)
-- [Project Structure](#project-structure)
 - [License](#license)
 
 
@@ -95,8 +94,8 @@ time_complexities = {
 - **`benchmark_model_max_time`** Maximum time cost allowed for the benchmark model, which runs once at the final stage. Multiplied by the number of ensemble models
 
 
-
-
-
 ---
+
+### Basic Example
+ToDo: add notebook
 
