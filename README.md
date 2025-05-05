@@ -25,3 +25,20 @@ The framework is designed to be modular, extensible, and applicable to both clas
 ToDo
 
 ## Usage
+
+### Configuration:
+
+All configuration parameters are defined in the `config.py` file.
+
+#### Input Format
+
+The input data must be in a tabular format and include:
+
+- **Target column**: A single column containing the prediction target (classification or regression).
+- **Optional columns**:
+  - **Drop columns**: Columns that must not be used by the model (e.g., identifiers or data leakage sources).
+  - **Index columns**: Columns used only for identification or metadata, not for training.
+- All the other columns will be considered as features for selection.
+
+---
+
