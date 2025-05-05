@@ -21,3 +21,7 @@ This project, developed as part of a master's thesis, proposes an ensemble-based
 
 The framework is designed to be modular, extensible, and applicable to both classification and regression problems. It includes tools for ranking, aggregating, and visualizing selected features across methods, with the goal of assisting data scientists in building better models with fewer, more meaningful inputs.
 
+## Installation
+ToDo
+
+## Usage
