@@ -1,5 +1,7 @@
 import time
+
 from algo import regression_methods_dict, classification_methods_dict
+
 
 def time_function(func, *args, **kwargs):
     """
@@ -18,6 +20,7 @@ def time_function(func, *args, **kwargs):
     elapsed = time.time() - start
     return result, elapsed
 
+
 def format_duration(seconds):
     """
     Formats a duration given in seconds into a human-readable string.
@@ -32,6 +35,7 @@ def format_duration(seconds):
     minutes = int((seconds % 3600) // 60)
     secs = int(seconds % 60)
     return f"{hours} hours, {minutes} minutes, {secs} seconds"
+
 
 def rename_duplicates(lst):
     """
@@ -51,6 +55,7 @@ def rename_duplicates(lst):
 
     return result
 
+
 def add_count_label(lst, lst_count):
     """
     Adds a count label to each item in a list.
@@ -67,6 +72,7 @@ def add_count_label(lst, lst_count):
         result.append(f"{lst[i]}\n{lst_count[i]} features")
 
     return result
+
 
 def get_methods_dict(model_type):
     """
@@ -87,4 +93,3 @@ def get_methods_dict(model_type):
         return regression_methods_dict
     else:
         raise ValueError(f"Invalid model type: {model_type}")
-

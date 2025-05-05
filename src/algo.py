@@ -1,12 +1,11 @@
 import numpy as np
 import pandas as pd
-import time_complexities as ts
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn.feature_selection import mutual_info_regression
 from sklearn.linear_model import Lasso
 from sklearn.preprocessing import StandardScaler
-from sklearn.feature_selection import mutual_info_regression
-from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 
-
+import time_complexities as ts
 
 
 def remove_zero_variance(X, y, threshold=1e-5, min_features=50, max_features=None):
@@ -25,7 +24,6 @@ def remove_zero_variance(X, y, threshold=1e-5, min_features=50, max_features=Non
     """
     variances = X.var()  # Compute variance for each column
     return X.loc[:, variances > threshold]  # Keep columns with variance above the threshold
-
 
 
 def remove_low_cv_features(X, y=None, threshold=0.1, epsilon=1e-8, min_features=50,
@@ -86,6 +84,7 @@ def remove_low_cv_features(X, y=None, threshold=0.1, epsilon=1e-8, min_features=
 
     return X_reduced
 
+
 def remove_majority_class_features(X, y=None, threshold=0.95, min_features=50,
                                    max_features=None, min_retention_ratio=0.5, threshold_decay=0.95):
     """
@@ -139,6 +138,7 @@ def remove_majority_class_features(X, y=None, threshold=0.95, min_features=50,
     print(f"Removed {n_total_features - X_reduced.shape[1]} majority-class features.")
 
     return X_reduced
+
 
 def select_features_by_mi_threshold(X, y, threshold=0.95, min_features=50,
                                     max_features=None, min_retention_ratio=0.5,
@@ -250,7 +250,9 @@ def correlation_based_feature_selection(X, y=None, threshold=0.98, min_features=
 
     return X_reduced
 
-def lasso_feature_selection(X, y, alpha=0.001, min_features=50, max_features=None, min_retention_ratio=0.5, alpha_decay=0.5):
+
+def lasso_feature_selection(X, y, alpha=0.001, min_features=50, max_features=None, min_retention_ratio=0.5,
+                            alpha_decay=0.5):
     """
     Selects features using Lasso regression.
 
@@ -304,9 +306,11 @@ def lasso_feature_selection(X, y, alpha=0.001, min_features=50, max_features=Non
     X_reduced = X[selected_features]
 
     print(f"Final alpha used: {current_alpha}")
-    print(f"Selected features: {len(selected_features)} out of {n_total_features} (min allowed: {min_allowed_features})")
+    print(
+        f"Selected features: {len(selected_features)} out of {n_total_features} (min allowed: {min_allowed_features})")
 
     return X_reduced
+
 
 def filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features):
     """
@@ -339,7 +343,9 @@ def filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_
         f"Selected features: {len(selected_features)} out of {total_features} ({(len(selected_features) / total_features) * 100:.1f}%)")
     return X[selected_features]
 
-def random_forest_reg_feature_selection(X, y, n_estimators=300, min_features=50, max_features=None, min_retention_ratio=0.5):
+
+def random_forest_reg_feature_selection(X, y, n_estimators=300, min_features=50, max_features=None,
+                                        min_retention_ratio=0.5):
     """
     Selects features using a Random Forest regressor.
 
@@ -362,7 +368,6 @@ def random_forest_reg_feature_selection(X, y, n_estimators=300, min_features=50,
 def random_forest_clf_feature_selection(X, y, n_estimators=300,
                                         min_features=50,
                                         max_features=None, min_retention_ratio=0.5):
-
     """
     Selects features using a Random Forest classifier.
 
@@ -380,7 +385,6 @@ def random_forest_clf_feature_selection(X, y, n_estimators=300,
     rf = RandomForestClassifier(n_estimators=n_estimators, random_state=42, n_jobs=-1)
     rf.fit(X, y)
     return filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features)
-
 
 
 regression_methods_dict = {

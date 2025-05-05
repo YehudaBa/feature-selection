@@ -1,8 +1,10 @@
-import os
+import json
 import math
+import os
 import uuid
-import pandas as pd
+
 import matplotlib.pyplot as plt
+import pandas as pd
 
 import config as cnfg
 from modeling import benchmark_xgboost
@@ -19,6 +21,7 @@ class FeatureSelection():
         used_methods (list): Stores the names of methods applied during feature selection.
         orig_methods (dict): Stores the original methods dictionary based on the model type.
     """
+
     def __init__(self):
         self.dims = []
         self.used_methods = []
@@ -31,6 +34,7 @@ class FeatureSelection():
         if cnfg.anomaly_detection:
             self.methods.remove("remove_zero_variance")
         self.methods = self.orig_methods.copy()
+        self.run_id = uuid.uuid4().hex
 
     def get_date(self):
         """
@@ -53,8 +57,7 @@ class FeatureSelection():
         elif cnfg.percent_features is not None:
             self.k_features = int(cnfg.percent_features * self.X.shape[1])
         else:
-            self.k_features = int(math.sqrt(self.X.shape[1]))
-
+            self.k_features = int(math.sqrt(self.X.shape[0]))
 
     def update_dims(self):
         """
@@ -116,7 +119,7 @@ class FeatureSelection():
             if self.validate_time_complexity(method):
                 print(f"Applying {method}")
                 self.used_methods.append(method)
-                self.X = self.methods[method]["pointer"](self.X, self.y, min_features = self.k_features)
+                self.X = self.methods[method]["pointer"](self.X, self.y, min_features=self.k_features)
                 self.update_dims()
                 del self.methods[method]
                 self.apply_methods()
@@ -163,7 +166,8 @@ class FeatureSelection():
         self.benchmarks = (len(self.used_methods) + 1) * [0] + [1]
         self.used_methods.append(best_method)
         print(f"Applying Benchmark Model {best_method}")
-        self.X = self.methods[best_method]["pointer"](self.X, self.y, min_features=self.k_features, max_features=self.k_features)
+        self.X = self.methods[best_method]["pointer"](self.X, self.y, min_features=self.k_features,
+                                                      max_features=self.k_features)
         self.update_dims()
         del self.methods[best_method]
 
@@ -203,9 +207,18 @@ class FeatureSelection():
         ax1.set_xticklabels(methods, rotation=45, ha="right", fontsize=7)
         plt.tight_layout()
         # Generate a unique file name using UUID
-        unique_filename = f"feature_selection_{uuid.uuid4().hex}.png"
+        unique_filename = f"feature_selection_{self.run_id}.png"
         # Save the plot to the file
         plt.savefig(unique_filename, dpi=300, bbox_inches='tight')
+
+    def save_selected_features(self):
+        '''
+        Save the selected features into txt file with the same run_id as in the plot file name
+        :return:  None
+        '''
+        print(f"`Selected Features:\n {list(self.X.columns)}")
+        with open(f"best_features_{self.run_id}", "w") as file:
+            json.dump(list(self.X.columns), file)
 
     def pipeline(self):
         """
@@ -227,3 +240,5 @@ class FeatureSelection():
         """
         _, self.run_time = time_function(self.pipeline)
         self.plot_feature_selection()
+        self.save_selected_features()
+        print(f"\nThe results saved to {self.run_id}.png and\n {self.run_id}.txt")

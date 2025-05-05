@@ -1,10 +1,10 @@
 import numpy as np
-import config as cnfg
 import xgboost as xgb
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import mean_squared_error, f1_score
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler
 
+import config as cnfg
 
 
 def benchmark_xgboost(X, y, test_size=0.2, n_estimators=100, early_stopping_rounds=10, cv=5):
@@ -27,7 +27,9 @@ def benchmark_xgboost(X, y, test_size=0.2, n_estimators=100, early_stopping_roun
     elif cnfg.model_type == "regression":
         return benchmark_xgboost_regression(X, y, test_size, n_estimators, early_stopping_rounds, cv)
 
-def benchmark_xgboost_regression(X, y, test_size=0.2, n_estimators=100, early_stopping_rounds=10, cv=5, random_state=42):
+
+def benchmark_xgboost_regression(X, y, test_size=0.2, n_estimators=100, early_stopping_rounds=10, cv=5,
+                                 random_state=42):
     """
     Runs an XGBoost regression benchmark model.
 
@@ -69,7 +71,9 @@ def benchmark_xgboost_regression(X, y, test_size=0.2, n_estimators=100, early_st
     print(f"Cross-Validation RMSE: {cv_rmse:.4f}")
     return model, test_rmse, cv_rmse
 
-def benchmark_xgboost_classification(X, y, test_size=0.2, n_estimators=100, early_stopping_rounds=10, cv=5, random_state=42):
+
+def benchmark_xgboost_classification(X, y, test_size=0.2, n_estimators=100, early_stopping_rounds=10, cv=5,
+                                     random_state=42):
     """
     Runs an XGBoost classification benchmark model.
 

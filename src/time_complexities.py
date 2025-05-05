@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def O_nd(n, d):
     """
     Computes the time complexity O(n * d), where:
@@ -13,7 +14,8 @@ def O_nd(n, d):
     Returns:
         int: Computed time complexity.
     """
-    return n*d
+    return n * d
+
 
 def O_nd_log_n(n, d):
     """
@@ -28,9 +30,10 @@ def O_nd_log_n(n, d):
     Returns:
         int: Computed time complexity.
     """
-    return int(n*d*np.log(n))
+    return int(n * d * np.log(n))
 
-def O_d2(n ,d):
+
+def O_d2(n, d):
     """
     Computes the time complexity O(d^2), where:
     - d: Number of features
@@ -42,9 +45,10 @@ def O_d2(n ,d):
     Returns:
         int: Computed time complexity.
     """
-    return d**2
+    return d ** 2
 
-def O_nd_log_n_T(n, d, T = 300):
+
+def O_nd_log_n_T(n, d, T=300):
     """
     Computes the time complexity O(n * d * log(n) * T), where:
     - n: Number of samples
@@ -59,7 +63,8 @@ def O_nd_log_n_T(n, d, T = 300):
     Returns:
         int: Computed time complexity.
     """
-    return int(T*n*d*np.log(n))
+    return int(T * n * d * np.log(n))
+
 
 def O_ndT(n, d, T=100):
     """
@@ -77,6 +82,3 @@ def O_ndT(n, d, T=100):
         int: Computed time complexity.
     """
     return n * d * T
-
-
-
