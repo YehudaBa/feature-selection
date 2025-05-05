@@ -1,145 +1,303 @@
 import numpy as np
 import pandas as pd
-from sklearn.feature_selection import mutual_info_regression, RFE
-
-from sklearn.linear_model import LassoCV, Lasso
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn.feature_selection import mutual_info_regression
+from sklearn.linear_model import Lasso
+from sklearn.preprocessing import StandardScaler
 
-import config as cnfg
+import time_complexities as ts
 
 
-import  time_complecities as ts
-
-def remove_zero_variance(X,y, threshold=1e-5, max_features=None):
+def remove_zero_variance(X, y, threshold=1e-5, min_features=50, max_features=None):
     """
-    Removes columns with variance close to zero from a Pandas DataFrame.
+    Removes features with zero or near-zero variance.
 
     Parameters:
-        X (pd.DataFrame): The input DataFrame.
-        threshold (float): Variance threshold below which columns are dropped.
+        X (pd.DataFrame or np.ndarray): Feature matrix.
+        y (pd.Series or np.ndarray): Target variable (not used in this function).
+        threshold (float): Variance threshold below which features are removed.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
 
     Returns:
-        pd.DataFrame: The DataFrame with low-variance columns removed.
+        pd.DataFrame: Reduced feature matrix.
     """
     variances = X.var()  # Compute variance for each column
     return X.loc[:, variances > threshold]  # Keep columns with variance above the threshold
 
 
+def remove_low_cv_features(X, y=None, threshold=0.1, epsilon=1e-8, min_features=50,
+                           max_features=None, min_retention_ratio=0.5, threshold_decay=0.9):
+    """
+     Removes features with low coefficient of variation (CV).
 
+     Parameters:
+         X (pd.DataFrame or np.ndarray): Feature matrix.
+         y (pd.Series or np.ndarray, optional): Target variable (not used in this function).
+         threshold (float): Initial CV threshold.
+         epsilon (float): Small value to avoid division by zero.
+         min_features (int): Minimum number of features to retain.
+         max_features (int, optional): Maximum number of features to retain.
+         min_retention_ratio (float): Minimum ratio of features to retain.
+         threshold_decay (float): Decay factor for the CV threshold.
 
-def remove_low_cv_features(X, y=None, threshold=0.1, epsilon=1e-8, min_features=1, max_features=None):
+     Returns:
+         pd.DataFrame: Reduced feature matrix.
+     """
     if isinstance(X, np.ndarray):
         X = pd.DataFrame(X)
+
+    n_total_features = X.shape[1]
+    min_allowed_features = max(int(n_total_features * min_retention_ratio), min_features)
+
     feature_means = X.mean(axis=0)
     feature_stds = X.std(axis=0)
     cv_values = feature_stds / (feature_means + epsilon)
-    selected_features = cv_values > threshold
-    num_features_to_keep = max(min_features, max(X.shape[1] // 2, selected_features.sum()))
-    if max_features:
-        num_features_to_keep = min(num_features_to_keep, max_features)
-    top_features = cv_values.nlargest(num_features_to_keep).index
-    X_reduced = X.loc[:, top_features]
-    print(f"Original feature count: {X.shape[1]}")
+
+    current_threshold = threshold
+
+    while True:
+        selected = cv_values > current_threshold
+        n_selected = selected.sum()
+
+        if n_selected >= min_allowed_features or current_threshold < 1e-6:
+            break
+        else:
+            current_threshold *= threshold_decay
+
+    # Ensure at least `min_features`
+    if n_selected < min_features:
+        top_indices = cv_values.nlargest(min_features).index
+    else:
+        top_indices = cv_values[selected].nlargest(n_selected).index
+
+    # Apply `max_features` limit
+    if max_features is not None and len(top_indices) > max_features:
+        top_indices = cv_values[top_indices].nlargest(max_features).index
+
+    X_reduced = X[top_indices]
+
+    print(f"Final CV threshold used: {current_threshold:.6f}")
+    print(f"Original feature count: {n_total_features}")
     print(f"Selected feature count: {X_reduced.shape[1]}")
-    print(f"Removed {X.shape[1] - X_reduced.shape[1]} low-CV features (CV < {threshold}).")
+    print(f"Removed {n_total_features - X_reduced.shape[1]} low-CV features.")
+
     return X_reduced
 
-def remove_majority_class_features(X, y=None, threshold=0.95, min_features=1, max_features=None):
-    if isinstance(X, np.ndarray):
-        X = pd.DataFrame(X)
-    majority_proportion = X.apply(lambda col: col.value_counts(normalize=True).values[0], axis=0)
-    selected_features = majority_proportion < threshold
-    num_features_to_keep = max(min_features, max(X.shape[1] // 2, selected_features.sum()))
-    if max_features:
-        num_features_to_keep = min(num_features_to_keep, max_features)
-    top_features = majority_proportion.nsmallest(num_features_to_keep).index
-    X_reduced = X.loc[:, top_features]
-    print(f"Original feature count: {X.shape[1]}")
-    print(f"Selected feature count: {X_reduced.shape[1]}")
-    print(f"Removed {X.shape[1] - X_reduced.shape[1]} features with majority proportion > {threshold}.")
-    return X_reduced
 
-def select_features_by_mi_threshold(X, y, threshold=0.95, min_features=1, max_features=None):
-    if isinstance(X, np.ndarray):
-        X = pd.DataFrame(X)
-    mi_scores = mutual_info_regression(X, y, random_state=42)
-    mi_series = pd.Series(mi_scores, index=X.columns).sort_values(ascending=False)
-    cumulative_mi = mi_series.cumsum() / mi_series.sum()
-    selected_features = cumulative_mi[cumulative_mi <= threshold].index
-    num_features_to_keep = max(min_features, max(X.shape[1] // 2, len(selected_features)))
-    if max_features:
-        num_features_to_keep = min(num_features_to_keep, max_features)
-    selected_features = mi_series.nlargest(num_features_to_keep).index
-    X_reduced = X[selected_features]
-    print(f"Original feature count: {X.shape[1]}")
-    print(f"Selected feature count: {X_reduced.shape[1]}")
-    print(f"Selected features contribute {threshold*100:.1f}% of total MI.")
-    return X_reduced
-
-def find_best_alpha(X, y, alphas=None, cv=5):
+def remove_majority_class_features(X, y=None, threshold=0.95, min_features=50,
+                                   max_features=None, min_retention_ratio=0.5, threshold_decay=0.95):
     """
-    Automatically selects the best alpha for Lasso using cross-validation.
+     Removes features dominated by a single class.
+
+     Parameters:
+         X (pd.DataFrame or np.ndarray): Feature matrix.
+         y (pd.Series or np.ndarray, optional): Target variable (not used in this function).
+         threshold (float): Proportion threshold for majority class.
+         min_features (int): Minimum number of features to retain.
+         max_features (int, optional): Maximum number of features to retain.
+         min_retention_ratio (float): Minimum ratio of features to retain.
+         threshold_decay (float): Decay factor for the threshold.
+
+     Returns:
+         pd.DataFrame: Reduced feature matrix.
+     """
+    if isinstance(X, np.ndarray):
+        X = pd.DataFrame(X)
+
+    n_total_features = X.shape[1]
+    min_allowed_features = max(int(n_total_features * min_retention_ratio), min_features)
+
+    majority_proportion = X.apply(lambda col: col.value_counts(normalize=True).values[0], axis=0)
+    current_threshold = threshold
+
+    while True:
+        selected = majority_proportion < current_threshold
+        n_selected = selected.sum()
+
+        if n_selected >= min_allowed_features or current_threshold < 1e-6:
+            break
+        else:
+            current_threshold *= threshold_decay
+
+    # Ensure at least `min_features`
+    if n_selected < min_features:
+        top_indices = majority_proportion.nsmallest(min_features).index
+    else:
+        top_indices = majority_proportion[selected].nsmallest(n_selected).index
+
+    # Apply `max_features` limit
+    if max_features is not None and len(top_indices) > max_features:
+        top_indices = majority_proportion[top_indices].nsmallest(max_features).index
+
+    X_reduced = X[top_indices]
+
+    print(f"Final threshold used: {current_threshold:.6f}")
+    print(f"Original feature count: {n_total_features}")
+    print(f"Selected feature count: {X_reduced.shape[1]}")
+    print(f"Removed {n_total_features - X_reduced.shape[1]} majority-class features.")
+
+    return X_reduced
+
+
+def select_features_by_mi_threshold(X, y, threshold=0.95, min_features=50,
+                                    max_features=None, min_retention_ratio=0.5,
+                                    threshold_decay=0.95):
+    """
+    Selects features based on mutual information (MI) threshold.
 
     Parameters:
-    X (pd.DataFrame or np.array): Feature matrix
-    y (pd.Series or np.array): Target variable
-    alphas (list or np.array): List of alpha values to test (default: log scale)
-    cv (int): Number of cross-validation folds
+        X (pd.DataFrame or np.ndarray): Feature matrix.
+        y (pd.Series or np.ndarray): Target variable.
+        threshold (float): Cumulative MI threshold.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+        min_retention_ratio (float): Minimum ratio of features to retain.
+        threshold_decay (float): Decay factor for the MI threshold.
 
     Returns:
-    float: Best alpha value
-    np.array: Lasso coefficients at best alpha
+        pd.DataFrame: Reduced feature matrix.
     """
-    if alphas is None:
-        alphas = np.logspace(-0.5, 2, 50)  # 50 values from 0.0001 to 10
-
-    # Standardize features
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-
-    # Lasso with Cross-Validation
-    lasso_cv = LassoCV(alphas=alphas, cv=cv, random_state=42, n_jobs=-1)
-    lasso_cv.fit(X_scaled, y)
-
-    print(f"Best alpha: {lasso_cv.alpha_:.6f}")
-    print(f"Number of selected features: {(lasso_cv.coef_ != 0).sum()} out of {X.shape[1]}")
-
-    return lasso_cv.alpha_, lasso_cv.coef_
-
-
-def correlation_based_feature_selection(X, y=None, threshold=0.98, min_features=1, max_features=None):
-    corr_matrix = X.corr().abs()
-    upper_triangle = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
-    to_drop = [column for column in upper_triangle.columns if any(upper_triangle[column] > threshold)]
-    max_removal = max(X.shape[1] // 2, X.shape[1] - min_features)
-    to_drop = to_drop[:max_removal]
-    X_reduced = X.drop(columns=to_drop)
-    if max_features:
-        keep_features = X_reduced.columns[:max_features]
-        X_reduced = X_reduced[keep_features]
-    print(f"Original features: {X.shape[1]}")
-    print(f"Removed features: {len(to_drop)} (max allowed: {max_removal})")
-    print(f"Remaining features: {X_reduced.shape[1]}")
-    return X_reduced
-
-def lasso_feature_selection(X, y, alpha=0.001, min_features=1, max_features=None):
     if isinstance(X, np.ndarray):
         X = pd.DataFrame(X)
 
+    n_total_features = X.shape[1]
+    min_allowed_features = max(int(n_total_features * min_retention_ratio), min_features)
+
+    mi_scores = mutual_info_regression(X, y, random_state=42)
+    mi_series = pd.Series(mi_scores, index=X.columns).sort_values(ascending=False)
+
+    current_threshold = threshold
+
+    while True:
+        cumulative_mi = mi_series.cumsum() / mi_series.sum()
+        selected = cumulative_mi[cumulative_mi <= current_threshold].index
+        n_selected = len(selected)
+
+        if n_selected >= min_allowed_features or current_threshold < 1e-6:
+            break
+        else:
+            current_threshold *= threshold_decay
+
+    # Ensure at least `min_features`
+    if n_selected < min_features:
+        selected = mi_series.nlargest(min_features).index
+    else:
+        selected = mi_series[selected].index
+
+    # Apply `max_features` limit
+    if max_features is not None and len(selected) > max_features:
+        selected = mi_series[selected].nlargest(max_features).index
+
+    X_reduced = X[selected]
+
+    print(f"Final MI threshold used: {current_threshold:.6f}")
+    print(f"Original feature count: {n_total_features}")
+    print(f"Selected feature count: {X_reduced.shape[1]}")
+    print(f"Selected features contribute at least {current_threshold * 100:.1f}% of total MI.")
+
+    return X_reduced
+
+
+def correlation_based_feature_selection(X, y=None, threshold=0.98, min_features=50,
+                                        max_features=None, min_retention_ratio=0.5,
+                                        threshold_decay=0.98):
+    """
+    Removes highly correlated features.
+
+    Parameters:
+        X (pd.DataFrame or np.ndarray): Feature matrix.
+        y (pd.Series or np.ndarray, optional): Target variable (not used in this function).
+        threshold (float): Correlation threshold.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+        min_retention_ratio (float): Minimum ratio of features to retain.
+        threshold_decay (float): Decay factor for the correlation threshold.
+
+    Returns:
+        pd.DataFrame: Reduced feature matrix.
+    """
+    if isinstance(X, np.ndarray):
+        X = pd.DataFrame(X)
+
+    n_total = X.shape[1]
+    min_allowed = max(int(n_total * min_retention_ratio), min_features)
+    current_threshold = threshold
+
+    while True:
+        corr_matrix = X.corr().abs()
+        upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
+        to_drop = [col for col in upper.columns if any(upper[col] > current_threshold)]
+        keep_count = n_total - len(to_drop)
+
+        if keep_count >= min_allowed or current_threshold <= 0:
+            break
+        current_threshold *= threshold_decay
+
+    # Actually drop selected features (limited by how many we’re allowed to drop)
+    max_removal = n_total - min_allowed
+    to_drop = to_drop[:max_removal]
+    X_reduced = X.drop(columns=to_drop)
+
+    # Enforce max_features limit
+    if max_features is not None and X_reduced.shape[1] > max_features:
+        X_reduced = X_reduced.iloc[:, :max_features]
+
+    print(f"Final correlation threshold used: {current_threshold:.4f}")
+    print(f"Original features: {n_total}")
+    print(f"Removed features: {len(to_drop)} (max allowed: {max_removal})")
+    print(f"Remaining features: {X_reduced.shape[1]}")
+
+    return X_reduced
+
+
+def lasso_feature_selection(X, y, alpha=0.001, min_features=50, max_features=None, min_retention_ratio=0.5,
+                            alpha_decay=0.5):
+    """
+    Selects features using Lasso regression.
+
+    Parameters:
+        X (pd.DataFrame or np.ndarray): Feature matrix.
+        y (pd.Series or np.ndarray): Target variable.
+        alpha (float): Regularization strength.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+        min_retention_ratio (float): Minimum ratio of features to retain.
+        alpha_decay (float): Decay factor for the alpha parameter.
+
+    Returns:
+        pd.DataFrame: Reduced feature matrix.
+    """
+    if isinstance(X, np.ndarray):
+        X = pd.DataFrame(X)
+
+    n_total_features = X.shape[1]
+    min_allowed_features = max(int(n_total_features * min_retention_ratio), min_features)
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    lasso = Lasso(alpha=alpha, random_state=42)
-    lasso.fit(X_scaled, y)
+    current_alpha = alpha
 
-    selected_features = X.columns[lasso.coef_ != 0]
-    max_removal = max(X.shape[1] // 2, X.shape[1] - min_features)
+    while True:
+        lasso = Lasso(alpha=current_alpha, random_state=42)
+        lasso.fit(X_scaled, y)
+        nonzero_coef_indices = np.flatnonzero(lasso.coef_)
+        selected_features = X.columns[nonzero_coef_indices]
 
-    if len(selected_features) < X.shape[1] - max_removal:
-        selected_features = X.columns[np.argsort(np.abs(lasso.coef_))[-max_removal:]]
+        if len(selected_features) >= min_allowed_features:
+            break
+        else:
+            current_alpha *= alpha_decay
+            if current_alpha < 1e-6:  # prevent infinite loop
+                print("Alpha too small. Returning top features to satisfy constraints.")
+                break
 
+    # Ensure at least min_features
+    if len(selected_features) < min_features:
+        top_indices = np.argsort(np.abs(lasso.coef_))[-min_features:]
+        selected_features = X.columns[top_indices]
+
+    # Apply max_features limit
     if max_features is not None and len(selected_features) > max_features:
         importance = np.abs(lasso.coef_)
         selected_indices = np.argsort(importance)[-max_features:]
@@ -147,119 +305,120 @@ def lasso_feature_selection(X, y, alpha=0.001, min_features=1, max_features=None
 
     X_reduced = X[selected_features]
 
-    print(f"Alpha: {alpha}")
-    print(f"Selected features: {len(selected_features)} out of {X.shape[1]} (max removal: {max_removal})")
+    print(f"Final alpha used: {current_alpha}")
+    print(
+        f"Selected features: {len(selected_features)} out of {n_total_features} (min allowed: {min_allowed_features})")
 
     return X_reduced
-# ToDo: change the absolute_num_of_features=cnfg.k_features to self.k_features (based on sqrt(n)
-def random_forest_reg_feature_selection(X, y, n_estimators=300, absolute_num_of_features=None, required_percent=None, min_features=50, max_features=None):
-    rf = RandomForestRegressor(n_estimators=n_estimators, random_state=42, n_jobs=-1)
-    rf.fit(X, y)
-    feature_importances = rf.feature_importances_
-    sorted_idx = np.argsort(feature_importances)[::-1]
+
+
+def filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features):
+    """
+    Filters features based on Random Forest feature importance.
+
+    Parameters:
+        rf (RandomForestClassifier or RandomForestRegressor): Trained Random Forest model.
+        X (pd.DataFrame): Feature matrix.
+        min_retention_ratio (float): Minimum ratio of features to retain.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+
+    Returns:
+        pd.DataFrame: Reduced feature matrix.
+    """
+    feature_importance = rf.feature_importances_
+    sorted_idx = np.argsort(feature_importance)[::-1]
     sorted_features = X.columns[sorted_idx]
-    sorted_importances = feature_importances[sorted_idx]
-    total_features = len(sorted_importances)
-    percent_based_count = int(total_features * required_percent) if required_percent is not None else 0
-    absolute_based_count = absolute_num_of_features if absolute_num_of_features is not None else 0
-    num_features_to_keep = max(min_features, max(percent_based_count, absolute_based_count, total_features // 2))
+    sorted_importance = feature_importance[sorted_idx]
+    total_features = len(sorted_importance)
+    n_total_features = X.shape[1]
+    num_features_to_keep = max(int(n_total_features * min_retention_ratio), min_features)
+
     if max_features is not None:
         num_features_to_keep = min(num_features_to_keep, max_features)
     num_features_to_keep = max(1, min(num_features_to_keep, total_features))
-    selected_features = sorted_features[:num_features_to_keep]
-
-    print(f"Selected features: {len(selected_features)} out of {total_features} ({(len(selected_features) / total_features) * 100:.1f}%)")
-
-    return X[selected_features]
-
-
-from sklearn.ensemble import RandomForestClassifier
-import numpy as np
-
-
-def random_forest_clf_feature_selection(X, y, n_estimators=300,
-                                        absolute_num_of_features=None,
-                                        required_percent=None,
-                                        min_features=50,
-                                        max_features=None):
-    rf = RandomForestClassifier(n_estimators=n_estimators, random_state=42, n_jobs=-1)
-    rf.fit(X, y)
-    feature_importances = rf.feature_importances_
-    sorted_idx = np.argsort(feature_importances)[::-1]
-    sorted_features = X.columns[sorted_idx]
-    sorted_importances = feature_importances[sorted_idx]
-
-    total_features = len(sorted_importances)
-    percent_based_count = int(total_features * required_percent) if required_percent is not None else 0
-    absolute_based_count = absolute_num_of_features if absolute_num_of_features is not None else 0
-
-    num_features_to_keep = max(min_features, max(percent_based_count, absolute_based_count, total_features // 2))
-    if max_features is not None:
-        num_features_to_keep = min(num_features_to_keep, max_features)
-    num_features_to_keep = max(1, min(num_features_to_keep, total_features))
-
     selected_features = sorted_features[:num_features_to_keep]
 
     print(
         f"Selected features: {len(selected_features)} out of {total_features} ({(len(selected_features) / total_features) * 100:.1f}%)")
-
     return X[selected_features]
 
 
-def rfe_feature_selection(X, y, max_features=100, model=None):
+def random_forest_reg_feature_selection(X, y, n_estimators=300, min_features=50, max_features=None,
+                                        min_retention_ratio=0.5):
     """
-    Perform Recursive Feature Elimination (RFE) to select features, ensuring at most half of the original features are removed.
+    Selects features using a Random Forest regressor.
 
     Parameters:
-    - X (pd.DataFrame): Feature matrix
-    - y (pd.Series or np.array): Target variable
-    - max_features (int): Maximum number of features to keep
-    - model (sklearn estimator, optional): Model to use for feature ranking (default: RandomForestRegressor)
+        X (pd.DataFrame or np.ndarray): Feature matrix.
+        y (pd.Series or np.ndarray): Target variable.
+        n_estimators (int): Number of trees in the Random Forest.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+        min_retention_ratio (float): Minimum ratio of features to retain.
 
     Returns:
-    - pd.DataFrame: Reduced feature set
-    - list: Selected feature names
+        pd.DataFrame: Reduced feature matrix.
     """
-    # Default model: Random Forest
-    if model is None:
-        model = RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1)
-
-    # Ensure at least n/2 features are selected
-    min_features = max(X.shape[1] // 2, 1)
-    n_features_to_select = min(max_features, X.shape[1])  # Cap at total feature count
-    n_features_to_select = max(n_features_to_select, min_features)  # Ensure at least n/2 are selected
-
-    # Apply RFE
-    rfe = RFE(estimator=model, n_features_to_select=n_features_to_select)
-    X_selected = rfe.fit_transform(X, y)
-
-    # Get selected feature names
-    selected_features = X.columns[rfe.support_]
-    print(f"Selected {len(selected_features)} features out of {X.shape[1]}")
-
-    return pd.DataFrame(X_selected, columns=selected_features)
+    rf = RandomForestRegressor(n_estimators=n_estimators, random_state=42, n_jobs=-1)
+    rf.fit(X, y)
+    return filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features)
 
 
-regression_methods_dict = {#"rfe_feature_selection": {"pointer": rfe_feature_selection, "time_complexity": ts.O_kn_d2},
-                        "remove_zero_variance": {"pointer": remove_zero_variance, "time_complexity": ts.O_nd, "index_method": "max_time_indexed_methods"},
-                        "random_forest_feature_selection": {"pointer": random_forest_reg_feature_selection, "time_complexity": ts.O_nd_log_d, "index_method": "max_time_non_indexed_methods"},
-                        "lasso_feature_selection": {"pointer": lasso_feature_selection, "time_complexity": ts.O_nd, "index_method": "max_time_non_indexed_methods"},
-                        "correlation_based_feature_selection": {"pointer": correlation_based_feature_selection, "time_complexity": ts.O_d2, "index_method": "max_time_indexed_methods"},
-                        "select_features_by_mi_threshold": {"pointer": select_features_by_mi_threshold, "time_complexity": ts.O_nd_log_n, "index_method": "max_time_indexed_methods"},
-                        "remove_majority_class_features": {"pointer": remove_majority_class_features, "time_complexity": ts.O_nd, "index_method": "max_time_indexed_methods"},
-                        "remove_low_cv_features": {"pointer": remove_low_cv_features, "time_complexity": ts.O_nd, "index_method": "max_time_indexed_methods"},
-                        }
+def random_forest_clf_feature_selection(X, y, n_estimators=300,
+                                        min_features=50,
+                                        max_features=None, min_retention_ratio=0.5):
+    """
+    Selects features using a Random Forest classifier.
+
+    Parameters:
+        X (pd.DataFrame or np.ndarray): Feature matrix.
+        y (pd.Series or np.ndarray): Target variable.
+        n_estimators (int): Number of trees in the Random Forest.
+        min_features (int): Minimum number of features to retain.
+        max_features (int, optional): Maximum number of features to retain.
+        min_retention_ratio (float): Minimum ratio of features to retain.
+
+    Returns:
+        pd.DataFrame: Reduced feature matrix.
+    """
+    rf = RandomForestClassifier(n_estimators=n_estimators, random_state=42, n_jobs=-1)
+    rf.fit(X, y)
+    return filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features)
 
 
-classification_methods_dict = {#"rfe_feature_selection": {"pointer": rfe_feature_selection, "time_complexity": ts.O_kn_d2},
-                        "remove_zero_variance": {"pointer": remove_zero_variance, "time_complexity": ts.O_nd, "index_method": "max_time_indexed_methods"},
-                        "random_forest_feature_selection": {"pointer": random_forest_clf_feature_selection, "time_complexity": ts.O_nd_log_d, "index_method": "max_time_non_indexed_methods"},
-                        "lasso_feature_selection": {"pointer": lasso_feature_selection, "time_complexity": ts.O_nd, "index_method": "max_time_non_indexed_methods"},
-                        "correlation_based_feature_selection": {"pointer": correlation_based_feature_selection, "time_complexity": ts.O_d2, "index_method": "max_time_indexed_methods"},
-                        "select_features_by_mi_threshold": {"pointer": select_features_by_mi_threshold, "time_complexity": ts.O_nd_log_n, "index_method": "max_time_indexed_methods"},
-                        "remove_majority_class_features": {"pointer": remove_majority_class_features, "time_complexity": ts.O_nd, "index_method": "max_time_indexed_methods"},
-                        "remove_low_cv_features": {"pointer": remove_low_cv_features, "time_complexity": ts.O_nd, "index_method": "max_time_indexed_methods"},
-                        }
+regression_methods_dict = {
+    "remove_zero_variance": {"pointer": remove_zero_variance, "time_complexity": ts.O_nd,
+                             "index_method": "max_time_indexed_methods"},
+    "random_forest_feature_selection": {"pointer": random_forest_reg_feature_selection,
+                                        "time_complexity": ts.O_nd_log_n,
+                                        "index_method": "max_time_non_indexed_methods"},
+    "lasso_feature_selection": {"pointer": lasso_feature_selection, "time_complexity": ts.O_nd,
+                                "index_method": "max_time_non_indexed_methods"},
+    "correlation_based_feature_selection": {"pointer": correlation_based_feature_selection, "time_complexity": ts.O_d2,
+                                            "index_method": "max_time_indexed_methods"},
+    "select_features_by_mi_threshold": {"pointer": select_features_by_mi_threshold, "time_complexity": ts.O_nd_log_n,
+                                        "index_method": "max_time_indexed_methods"},
+    "remove_majority_class_features": {"pointer": remove_majority_class_features, "time_complexity": ts.O_nd,
+                                       "index_method": "max_time_indexed_methods"},
+    "remove_low_cv_features": {"pointer": remove_low_cv_features, "time_complexity": ts.O_nd,
+                               "index_method": "max_time_indexed_methods"},
+}
 
-
-
+classification_methods_dict = {
+    "remove_zero_variance": {"pointer": remove_zero_variance, "time_complexity": ts.O_nd,
+                             "index_method": "max_time_indexed_methods"},
+    "random_forest_feature_selection": {"pointer": random_forest_clf_feature_selection,
+                                        "time_complexity": ts.O_nd_log_n,
+                                        "index_method": "max_time_non_indexed_methods"},
+    "lasso_feature_selection": {"pointer": lasso_feature_selection, "time_complexity": ts.O_nd,
+                                "index_method": "max_time_non_indexed_methods"},
+    "correlation_based_feature_selection": {"pointer": correlation_based_feature_selection, "time_complexity": ts.O_d2,
+                                            "index_method": "max_time_indexed_methods"},
+    "select_features_by_mi_threshold": {"pointer": select_features_by_mi_threshold, "time_complexity": ts.O_nd_log_n,
+                                        "index_method": "max_time_indexed_methods"},
+    "remove_majority_class_features": {"pointer": remove_majority_class_features, "time_complexity": ts.O_nd,
+                                       "index_method": "max_time_indexed_methods"},
+    "remove_low_cv_features": {"pointer": remove_low_cv_features, "time_complexity": ts.O_nd,
+                               "index_method": "max_time_indexed_methods"},
+}
