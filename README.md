@@ -87,8 +87,8 @@ To manage computational cost during feature selection:
 
 ```python
 time_complexities = {
-    "max_time_indexed_methods": int,
-    "max_time_non_indexed_methods": int
+    "max_time_indexed_methods": int, # Indexed methods: Fast methods like correlation
+    "max_time_non_indexed_methods": int # Non-indexed methods: Slower methods like Random Forest or RFE
 }
 ```
 - **`benchmark_model_max_time`** Maximum time cost allowed for the benchmark model, which runs once at the final stage. Multiplied by the number of ensemble model
