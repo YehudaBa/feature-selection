@@ -97,5 +97,22 @@ time_complexities = {
 ---
 
 ### Basic Example
-ToDo: add notebook
+
+To see the feature selection pipeline in action, check out the example notebook:
+
+📓 [`notebooks/example_usage.ipynb`](notebooks/example_usage.ipynb)
+
+This notebook demonstrates:
+
+- How to configure the pipeline using `config.py`
+- What the expected input format looks like
+- How to run the selection process
+- How to inspect the selected features
+
+> Tip: Make sure to run the notebook from the project root directory so it can access modules like `config.py`.  
+If needed, add the following to the first cell to enable imports:
+
+```python
+import sys, os
+sys.path.append(os.path.abspath(".."))
 
