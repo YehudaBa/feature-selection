@@ -100,7 +100,7 @@ time_complexities = {
 
 To see the feature selection pipeline in action, check out the example notebook:
 
-📓 [`notebooks/example_usage.ipynb`](notebooks/example_usage.ipynb)
+📓 [`example_usage.ipynb`](src/notebooks/example_usage.ipynb)
 
 This notebook demonstrates:
 
