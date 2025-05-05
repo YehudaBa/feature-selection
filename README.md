@@ -25,7 +25,18 @@ The framework is designed to be modular, extensible, and applicable to both clas
 ToDo
 
 ## Usage
-All configuration parameters are defined in the `config.py` file.
+
+### Input Format
+
+The input data must be a csv file, and follow this structure:
+
+- **Target column**: *(str)* A single column representing the prediction target.
+- **Optional columns**:
+  - **`drop_cols`** *(List[str])*: Columns that must be excluded from model training (e.g., identifiers, known leakage).
+  - **`index_cols`** *(List[str])*: Columns used for indexing or metadata, not included in training or selection.
+- All the other columns will be considered as features for selection.
+
+> The model will automatically ignore all columns listed in `drop_cols` and `index_cols`.
 
 ---
 
@@ -33,19 +44,57 @@ All configuration parameters are defined in the `config.py` file.
 
 This section defines all required and optional parameters for running the feature selection pipeline.
 
+All configuration parameters are defined in the `config.py` file.
+
+---
+
 #### Input Location
 
-- `input_path` *(str)*: Path to the input data file (e.g., CSV or Parquet).
+- **`input_path`** *(str)*: Path to the input data file (e.g., CSV or Parquet).
 
-#### Input Format
+---
 
-The input data must follow this structure:
+#### Feature Count
 
-- **Target column**: A single column containing the prediction target (classification or regression).
-- **Optional columns**:
-  - **Drop columns**: Columns that must not be used by the model (e.g., identifiers or data leakage sources).
-  - **Index columns**: Columns used only for identification or metadata, not for training.
-- All the other columns will be considered as features for selection.
+Specify how many features to select:
+
+- **`k_features`** *(int or None)*: Absolute number of features to select.
+- **`percent_features`** *(float or None)*: Percentage (e.g., `0.2` for 20%) of features to select.
+
+> ⚠️ **Exactly one** of `k_features` or `percent_features` must be `None`.  
+If both are set, the model raises an error.  
+If both are `None`, the default is `sqrt(n_samples)`.
+
+---
+
+#### Column Settings
+
+- **`target_col`** *(str)*: Name of the target column.
+- **`drop_cols`** *(List[str])*: List of forbidden feature columns.
+- **`index_cols`** *(List[str])*: List of index/metadata columns.
+
+---
+
+#### Model Type
+
+- **`model_type`** *(str)*: Type of task to solve — must be either `"classification"` or `"regression"`.
+
+---
+
+#### Time Complexity Controls
+
+To manage computational cost during feature selection:
+
+```python
+time_complexities = {
+    "max_time_indexed_methods": int,
+    "max_time_non_indexed_methods": int
+}
+
+- **`benchmark_model_max_time`** Maximum time cost allowed for the benchmark model, which runs once at the final stage. Multiplied by the number of ensemble model
+
+
+
 
 ---
 
