@@ -78,6 +78,8 @@ If both are `None`, the default is `sqrt(n_samples)`.
 #### Model Type
 
 - **`model_type`** *(str)*: Type of task to solve — must be either `"classification"` or `"regression"`.
+- 
+- **`Anomaly Detection (Not yet supported)`** *(bool)*: Currently ignored. Placeholder for future development.
 
 ---
 
@@ -93,7 +95,6 @@ time_complexities = {
 ```
 - **`benchmark_model_max_time`** Maximum time cost allowed for the benchmark model, which runs once at the final stage. Multiplied by the number of ensemble models
 
-- **`Anomaly Detection (Not yet supported)`** *(bool)*: Currently ignored. Placeholder for future development.
 
 
 
