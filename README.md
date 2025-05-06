@@ -150,7 +150,7 @@ The iteration continues until one of the following occurs:
 
 - The feature space has been reduced enough to allow a heavier benchmark model to run within its own compelxity time (from the config).
 
-  ### Benchmark Model Selection:
+### Benchmark Model Selection:
 
 If the system reaches a point where a complex supervised model (e.g., gradient boosting) can be run:
 
