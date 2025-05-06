@@ -20,8 +20,18 @@ This project, developed as part of a master's thesis, proposes an ensemble-based
 The framework is designed to be modular, extensible, and applicable to both classification and regression problems. It includes tools for ranking, aggregating, and visualizing selected features across methods, with the goal of assisting data scientists in building better models with fewer, more meaningful inputs.
 
 ## Installation
-ToDo
 
+1. Make sure you are using **Python  3.11.10** (or compatible).
+2. It is recommended to use a virtual environment:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 ## Usage
 
 ### Input Format
