@@ -188,6 +188,6 @@ best_features_{run_id}
 
 You can find example output files in the [`example_results/`](example_results/) folder:
 
-- [Flow Diagram](example_results/feature_selection_1234abcd.png)
-- [Selected Features Output](example_results/1234abcd_cd08d06fcb26444ea186841fe94844f3)
+- [Flow Diagram](example_results/feature_selection_cd08d06fcb26444ea186841fe94844f3.png)
+- [Selected Features Output](example_results/best_features_cd08d06fcb26444ea186841fe94844f3)
 
