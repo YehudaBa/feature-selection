@@ -163,5 +163,22 @@ The final selected feature set is the one that achieved the highest performance 
 This methodology ensures a balance between performance and efficiency, leveraging strong selectors where possible while respecting resource constraints. The iterative ensemble design helps avoid overfitting to any single method or metric.
 
 
+## Results
+
+Each feature selection run is assigned a unique identifier using a UUID. This run ID is used to generate and store the output files:
+
+### Output Files
+
+- 🖼️ **Flow Diagram:**  
+  A visual summary of the executed feature selection process is saved as:
+  
+feature_selection_{run_id}.png
+
+- 📄 **Selected Features File:**  
+The list of selected features is saved as a serialized object, named:  
+best_features_{run_id}
 
 
+> ⚠️ **Note on Flow Complexity:**  
+> The flow diagram visualizes the sequence of feature selection methods used, along with their normalized time complexities.  
+> Complexity is **not shown in absolute terms**, but is normalized relative to the input dimensionality at each stage of the process.
