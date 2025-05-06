@@ -5,7 +5,6 @@ A master's thesis project exploring an ensemble approach to feature selection, c
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Methodology](#methodology)
