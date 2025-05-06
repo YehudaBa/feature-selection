@@ -136,7 +136,7 @@ class FeatureSelection():
         best_key = None
         for method in [x for x in self.methods.keys() if x != "remove_zero_variance"]:
             if self.validate_time_complexity(method):
-                X = self.methods[method]["pointer"](self.X, self.y)
+                X = self.methods[method]["pointer"](self.X, self.y, max_features = self.k_features)
                 _, methods_cost[method], _ = benchmark_xgboost(X, self.y.copy())
                 if cnfg.model_type == "classification":
                     best_key = min(methods_cost, key=methods_cost.get)
@@ -166,8 +166,7 @@ class FeatureSelection():
         self.benchmarks = (len(self.used_methods) + 1) * [0] + [1]
         self.used_methods.append(best_method)
         print(f"Applying Benchmark Model {best_method}")
-        self.X = self.methods[best_method]["pointer"](self.X, self.y, min_features=self.k_features,
-                                                      max_features=self.k_features)
+        self.X = self.methods[best_method]["pointer"](self.X, self.y, min_features=self.k_features)
         self.update_dims()
         del self.methods[best_method]
 
