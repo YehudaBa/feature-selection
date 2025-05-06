@@ -146,8 +146,22 @@ After we have finished going through the entire list, we do another iteration ov
 
 The iteration continues until one of the following occurs:
 
-The number of features reaches the target specified by the user (k_features or percent_features), or
+- The number of features reaches the target specified by the user (k_features or percent_features).
 
-The feature space has been reduced enough to allow a heavier benchmark model to run within its own compelxity time (from the config).
+- The feature space has been reduced enough to allow a heavier benchmark model to run within its own compelxity time (from the config).
+
+  ### Benchmark Model Selection:
+
+If the system reaches a point where a complex supervised model (e.g., gradient boosting) can be run:
+
+It re-applies all feature selection methods from the original list, each constrained to select exactly the desired number of features.
+
+For each resulting feature set, a benchmark model is trained and evaluated.
+
+The final selected feature set is the one that achieved the highest performance (e.g., accuracy, F1, RMSE) on the benchmark model.
+
+This methodology ensures a balance between performance and efficiency, leveraging strong selectors where possible while respecting resource constraints. The iterative ensemble design helps avoid overfitting to any single method or metric.
+
+
 
 
