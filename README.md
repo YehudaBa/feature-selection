@@ -190,3 +190,6 @@ You can find example output files in the [`example_results/`](example_results/) 
 - [Flow Diagram](example_results/feature_selection_cd08d06fcb26444ea186841fe94844f3.png)
 - [Selected Features Output](example_results/best_features_cd08d06fcb26444ea186841fe94844f3)
 
+## License
+
+This project is for academic purposes only and is not licensed for commercial use.
