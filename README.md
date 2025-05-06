@@ -115,4 +115,18 @@ If needed, add the following to the first cell to enable imports:
 ```python
 import sys, os
 sys.path.append(os.path.abspath(".."))
+```
+
+
+## Methodology
+
+This system performs feature selection using an ensemble of methods, guided by constraints and preferences provided in a configuration file. These include runtime budgets, target number of features, task type (classification or regression), and more.
+
+The overall process follows these steps:
+
+### Initialization:
+Based on the configuration, a list of feature selection methods is defined. The methods ranked by quality, and associated with an estimated runtime cost.
+
+### Iterative Filtering:
+
 
