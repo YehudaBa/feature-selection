@@ -129,4 +129,25 @@ Based on the configuration, a list of feature selection methods is defined. The 
 
 ### Iterative Filtering:
 
+Iterative Filtering
+The system iterates through the list of methods in order of quality:
+
+If a method's estimated runtime fits within the constraints (time_complexities), it is executed on the current feature set.
+
+The output is a reduced feature set, which becomes the input for the next method.
+
+If the method's cost exceeds the allowed limit, it is skipped, but will be re-evaluated immediately after the next method is applied.
+
+Each method is required to retain at least 50% of the input features it receives.
+
+After we have finished going through the entire list, we do another iteration over the entire list, and so on recursively.
+
+### Stopping Conditions:
+
+The iteration continues until one of the following occurs:
+
+The number of features reaches the target specified by the user (k_features or percent_features), or
+
+The feature space has been reduced enough to allow a heavier benchmark model to run within its own compelxity time (from the config).
+
 
