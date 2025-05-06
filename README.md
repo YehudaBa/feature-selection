@@ -183,3 +183,11 @@ best_features_{run_id}
 > ⚠️ **Note on Flow Complexity:**  
 > The flow diagram visualizes the sequence of feature selection methods used, along with their normalized time complexities.  
 > Complexity is **not shown in absolute terms**, but is normalized relative to the input dimensionality at each stage of the process.
+
+### Example Results
+
+You can find example output files in the [`example_results/`](example_results/) folder:
+
+- [Flow Diagram](example_results/feature_selection_1234abcd.png)
+- [Selected Features Output](example_results/1234abcd_cd08d06fcb26444ea186841fe94844f3)
+
