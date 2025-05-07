@@ -32,6 +32,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```bash
 pip install -r requirements.txt
 ```
+
 ## Usage
 
 ### Input Format
@@ -203,3 +204,4 @@ You can find example output files in the [`example_results/`](example_results/) 
 ## License
 
 This project is for academic purposes only and is not licensed for commercial use.
+
