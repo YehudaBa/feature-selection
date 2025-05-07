@@ -5,7 +5,6 @@ A master's thesis project exploring an ensemble approach to feature selection, c
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Methodology](#methodology)
@@ -21,7 +20,18 @@ This project, developed as part of a master's thesis, proposes an ensemble-based
 The framework is designed to be modular, extensible, and applicable to both classification and regression problems. It includes tools for ranking, aggregating, and visualizing selected features across methods, with the goal of assisting data scientists in building better models with fewer, more meaningful inputs.
 
 ## Installation
-ToDo
+
+1. Make sure you are using **Python  3.11.10** (or compatible).
+2. It is recommended to use a virtual environment:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
 ## Usage
 
@@ -190,4 +200,8 @@ You can find example output files in the [`example_results/`](example_results/) 
 
 - [Flow Diagram](example_results/feature_selection_cd08d06fcb26444ea186841fe94844f3.png)
 - [Selected Features Output](example_results/best_features_cd08d06fcb26444ea186841fe94844f3)
+
+## License
+
+This project is for academic purposes only and is not licensed for commercial use.
 
