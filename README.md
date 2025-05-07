@@ -174,7 +174,7 @@ This methodology ensures a balance between performance and efficiency, leveragin
 
 ### Feature Selection Workflow:
 
-![Example Flow](results/feature_selection_1234abcd.png)
+![Workflow](resources/feature_selection_flow_grid.drawio.png)
 
 
 ## Results
