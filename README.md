@@ -172,6 +172,10 @@ The final selected feature set is the one that achieved the highest performance 
 
 This methodology ensures a balance between performance and efficiency, leveraging strong selectors where possible while respecting resource constraints. The iterative ensemble design helps avoid overfitting to any single method or metric.
 
+### Feature Selection Workflow:
+
+![Workflow](resources/feature_selection_flow_grid.drawio.png)
+
 
 ## Results
 
