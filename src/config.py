@@ -32,8 +32,8 @@ anomaly_detection = False
 
 ## max allowing time for indexed methods/ non indexed methods
 time_complexities = {
-"max_time_indexed_methods" : 94727754+1,
-"max_time_non_indexed_methods" : 175798159 }#40000000}
+"max_time_indexed_methods" :94727755,
+"max_time_non_indexed_methods" :175798159}
 
 benchmark_model_max_time = 3000000
 

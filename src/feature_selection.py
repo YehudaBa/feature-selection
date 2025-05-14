@@ -113,9 +113,9 @@ class FeatureSelection():
         """
         for method in self.methods.keys():
             if self.is_reduction_goal_met():
-                return
+                return True
             if self.can_run_benchmark_model():
-                return
+                return True
             if self.validate_time_complexity(method):
                 print(f"Applying {method}")
                 self.used_methods.append(method)
@@ -144,6 +144,16 @@ class FeatureSelection():
                     best_key = max(methods_cost, key=methods_cost.get)
         return best_key
 
+    def check_any_method_can_run(self):
+        """
+        Checks if any method can be run based on time complexity.
+        :return:
+        """
+        for method in self.orig_methods.keys():
+            if self.validate_time_complexity(method):
+                return True
+        return False
+
     def run_unsupervised_selections(self):
         """
         Runs unsupervised feature selection methods iteratively until no further reduction is achieved.
@@ -153,7 +163,18 @@ class FeatureSelection():
         while tmp_dim != self.X.shape[1]:
             tmp_dim = self.X.shape[1]
             self.methods = self.orig_methods.copy()
-            self.apply_methods()
+            is_break =  self.apply_methods()
+            if is_break:
+                return
+
+        # there is no reduction in the last iteration, and did not reach the goal, and can not run the benchmark
+        # check if any method can run, if so - the user should give higher computational complexity for the benchmark model
+        if self.check_any_method_can_run():
+            print("The operation failed due to runtime limits. Try allowing higher computational complexity for the benchmark model in the configuration settings")
+            exit(1)
+        # if none of the methods can run, the user should give higher computational complexity for the methods
+        print("The operation failed due to runtime limits. Try allowing higher computational complexity in the configuration settings")
+        exit(1)
 
     def run_supervised_selections(self):
         """
