@@ -154,12 +154,16 @@ After we have finished going through the entire list, we do another iteration ov
 
 ### Stopping Conditions:
 
+
 The iteration continues until one of the following occurs:
 
 - The number of features reaches the target specified by the user (k_features or percent_features).
 
-- The feature space has been reduced enough to allow a heavier benchmark model to run within its own compelxity time (from the config).
+- The feature space has been reduced enough to allow a heavier benchmark model to run within its own complexity constraint (as defined in the config).
 
+- None of the selection methods manage to meet the runtime requirement. In this case, the program will terminate and prompt the user to increase the allowed complexity.
+
+- The selection methods stop making progress (i.e., no further reduction in features), and the number of features is still too high for the benchmark model to run within its complexity limit. The program will terminate and ask the user to increase the benchmark model's complexity constraint.
 ### Benchmark Model Selection:
 
 If the system reaches a point where a complex supervised model (e.g., gradient boosting) can be run:
