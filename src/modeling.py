@@ -29,7 +29,7 @@ def benchmark_xgboost(X, y, test_size=0.2, n_estimators=100, early_stopping_roun
 
 
 def benchmark_xgboost_regression(X, y, test_size=0.2, n_estimators=100, early_stopping_rounds=10, cv=5,
-                                 random_state=42):
+                                 random_state=cnfg.random_seed):
     """
     Runs an XGBoost regression benchmark model.
 
@@ -73,7 +73,7 @@ def benchmark_xgboost_regression(X, y, test_size=0.2, n_estimators=100, early_st
 
 
 def benchmark_xgboost_classification(X, y, test_size=0.2, n_estimators=100, early_stopping_rounds=10, cv=5,
-                                     random_state=42):
+                                     random_state=cnfg.random_seed):
     """
     Runs an XGBoost classification benchmark model.
 
