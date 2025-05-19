@@ -40,3 +40,4 @@ benchmark_model_max_time = 3000000
 model_type = "classification"
 # model_type = "regression"
 
+random_seed = None

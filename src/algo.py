@@ -6,6 +6,7 @@ from sklearn.linear_model import Lasso
 from sklearn.preprocessing import StandardScaler
 
 import time_complexities as ts
+import config as cnfg
 
 
 def remove_zero_variance(X, y, threshold=1e-5, min_features=50, max_features=None):
@@ -164,7 +165,7 @@ def select_features_by_mi_threshold(X, y, threshold=0.95, min_features=50,
     n_total_features = X.shape[1]
     min_allowed_features = max(int(n_total_features * min_retention_ratio), min_features)
 
-    mi_scores = mutual_info_regression(X, y, random_state=42)
+    mi_scores = mutual_info_regression(X, y, random_state=cnfg.random_seed)
     mi_series = pd.Series(mi_scores, index=X.columns).sort_values(ascending=False)
 
     current_threshold = threshold
@@ -279,7 +280,7 @@ def lasso_feature_selection(X, y, alpha=0.001, min_features=50, max_features=Non
     current_alpha = alpha
 
     while True:
-        lasso = Lasso(alpha=current_alpha, random_state=42)
+        lasso = Lasso(alpha=current_alpha, random_state=cnfg.random_seed)
         lasso.fit(X_scaled, y)
         nonzero_coef_indices = np.flatnonzero(lasso.coef_)
         selected_features = X.columns[nonzero_coef_indices]
@@ -360,7 +361,7 @@ def random_forest_reg_feature_selection(X, y, n_estimators=300, min_features=50,
     Returns:
         pd.DataFrame: Reduced feature matrix.
     """
-    rf = RandomForestRegressor(n_estimators=n_estimators, random_state=42, n_jobs=-1)
+    rf = RandomForestRegressor(n_estimators=n_estimators, random_state=cnfg.random_seed, n_jobs=-1)
     rf.fit(X, y)
     return filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features)
 
@@ -382,7 +383,7 @@ def random_forest_clf_feature_selection(X, y, n_estimators=300,
     Returns:
         pd.DataFrame: Reduced feature matrix.
     """
-    rf = RandomForestClassifier(n_estimators=n_estimators, random_state=42, n_jobs=-1)
+    rf = RandomForestClassifier(n_estimators=n_estimators, random_state=cnfg.random_seed, n_jobs=-1)
     rf.fit(X, y)
     return filter_features_random_forest(rf, X, min_retention_ratio, min_features, max_features)
 
