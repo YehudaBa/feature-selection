@@ -103,9 +103,12 @@ time_complexities = {
 ```
 - **`benchmark_model_max_time`** Maximum time cost allowed for the benchmark model, which runs once at the final stage. Multiplied by the number of ensemble models
 
+---
+
 #### Random Seed
 
-random_seed (int or None): Sets the random seed for reproducibility. If None, no specific seed is used.
+- **`random_seed`** (int or None): Sets the random seed for reproducibility. If None, no specific seed is used.
+
 ---
 
 ### Basic Example
