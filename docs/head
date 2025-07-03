@@ -174,9 +174,7 @@
 </head>
 <body>
 <header id="title-block-header">
-        <figure id="fig:runi_logo">
-<img src="images/runi_logo.png" style="width:70.0%" />
-</figure>
+
 <h1 class="title"> <strong>Final Project Report</strong><br />
 <strong>Project Name</strong> </h1>
 <p class="author"><strong>Student 1</strong><br />
