@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
-<head>  
-  <link rel="stylesheet" href="style.css">
+<head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
@@ -174,7 +173,6 @@
 </head>
 <body>
 <header id="title-block-header">
-
 <h1 class="title"> <strong>Final Project Report</strong><br />
 <strong>Project Name</strong> </h1>
 <p class="author"><strong>Student 1</strong><br />
