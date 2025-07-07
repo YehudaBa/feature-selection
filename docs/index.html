@@ -116,7 +116,83 @@
   <main>
     <section id="introduction">
       <h2>Introduction</h2>
-      <p>In today’s data-driven landscape, machine learning models are frequently tasked with analyzing high-dimensional datasets... (תוכן קיים).</p>
+      <p>In today’s data-driven landscape, machine
+learning models are frequently tasked with
+analyzing high-dimensional datasets—those
+containing hundreds, thousands, or even millions of features. This challenge is particularly pronounced in domains such as
+genomics, cybersecurity, image and speech
+recognition, and general data science, where
+data often includes a vast number of variables
+relative to the number of observations.</p>
+      
+<p>While having access to a large number of features might seem advantageous, in practice,
+it often introduces serious complications. Redundant, irrelevant, or noisy features can obscure the underlying patterns in the data,
+leading to decreased predictive performance.
+Additionally, they significantly increase the
+computational burden during model training
+and inference, which is particularly problematic when working under constraints of time
+or limited computing resources. In extreme cases, the presence of such features can
+even mislead the model, causing it to learn
+spurious correlations instead of meaningful
+insights.</p>
+
+<p>Feature selection—a critical preprocessing
+step in the machine learning pipeline—aims
+to address these challenges. By identifying
+and retaining only the most relevant and informative features, feature selection can improve model accuracy, reduce overfitting, accelerate training, and enhance interpretability. However, no single feature selection technique works best in all scenarios.
+Some methods are statistically rigorous but
+computationally intensive, making them impractical for large-scale datasets. Others are
+fast and scalable but may compromise on selection quality, potentially overlooking subtle
+but important variables.</p>
+
+<p>This project introduces a smart ensemble approach to feature selection, which combines
+the strengths of multiple existing methods
+to achieve a robust balance between performance (in terms of selection quality and resulting model accuracy) and efficiency (in
+terms of runtime and resource usage). Ensemble feature selection has been shown to
+improve stability and accuracy by aggregating results from multiple base methods.</p>
+
+<p>A key innovation of this approach lies in its
+iterative pipeline structure. Instead of performing feature selection in a single pass,
+the system proceeds through multiple controlled iterations. In each iteration, it evaluates the feature set using the best available model—determined dynamically based
+on current constraints and performance metrics. These constraints, or regulations, include user-defined parameters such as maximum runtime, memory limits, or a cap on
+the number of features. The model choice at
+each step is adaptive: for example, the system
+might choose a simple and fast model early
+in the process to rapidly eliminate uninformative features, and then refine the selection
+using a more complex and accurate model as
+the feature space becomes smaller and more
+manageable.</p>
+
+<p>This regulated, adaptive, and iterative process ensures that the pipeline remains both
+efficient and effective across a wide range of
+use cases and datasets. It continuously optimizes feature selection quality while respecting practical constraints, striking an optimal
+trade-off between speed and accuracy.</p>
+
+<p>Furthermore, the implementation offers a
+high degree of user customization and control. Users can specify a range of parameters
+according to their needs and constraints, including:
+<ul>
+  <li>The target number of features (either as
+an exact number or a percentage of the
+original set).</li>
+  <li>Maximum allowable runtime.</li>
+  <li>Preferred feature selection strategies to
+include in the ensemble.</li>
+   <li>Tolerance levels for correlation or redundancy among selected features, and
+more.</li>
+</ul>
+</p>
+
+<p>The approach is also data-agnostic, making
+no assumptions about the structure, scale, or
+domain of the input data. This enables it to
+be applied across disciplines, from healthcare
+to finance to engineering.</p>
+
+<p>In summary, the proposed system seeks to
+provide a practical, powerful, and adaptable solution to one of machine learning’s
+most enduring challenges—efficient and effective feature selection in high-dimensional
+spaces—through a smart, regulated, and iterative ensemble pipeline.</p>
     </section>
 
     <section id="methods">
