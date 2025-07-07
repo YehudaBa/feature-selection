@@ -406,139 +406,44 @@ thresholds.</p></li>
 <li><p>Slower than filter-based methods.</p></li>
 </ul>
 <div id="tab:example">
-<table>
-<caption>Summary of Trade-Offs</caption>
-<thead>
-<tr>
-<th style="text-align: center;"><strong>Method Type</strong></th>
-<th style="text-align: center;"><strong>Pros</strong></th>
-<th style="text-align: center;"><strong>Cons</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;">Filter</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">scalable,</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">general</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">interactions</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">Wrapper</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">accuracy,</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">interaction-</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">aware</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">overfitting</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">risk</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;"><span class="citation"
-data-cites="tang2014feature"></span></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">Embedded</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">integrated</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">specific</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">Ensemble</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">robust,</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">hybrid</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">computat-</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">ionally</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">intensive</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">Iterative</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">controllable</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">requires-</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr>
-<td style="text-align: center;">tuning</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-</tbody>
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; text-align: center;">
+  <caption><strong>Summary of Trade-Offs</strong></caption>
+  <thead>
+    <tr>
+      <th>Method Type</th>
+      <th>Pros</th>
+      <th>Cons</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Filter</td>
+      <td>Scalable, general</td>
+      <td>Ignores feature interactions</td>
+    </tr>
+    <tr>
+      <td>Wrapper</td>
+      <td>High accuracy, interaction-aware</td>
+      <td>High risk of overfitting, slow</td>
+    </tr>
+    <tr>
+      <td>Embedded</td>
+      <td>Integrated with model, specific</td>
+      <td>Sensitive to early feature choices</td>
+    </tr>
+    <tr>
+      <td>Ensemble</td>
+      <td>Robust, hybrid</td>
+      <td>Computationally intensive</td>
+    </tr>
+    <tr>
+      <td>Iterative</td>
+      <td>Controllable</td>
+      <td>Requires tuning</td>
+    </tr>
+  </tbody>
 </table>
+
 </div>
 <p><span id="tab:example" data-label="tab:example"></span></p>
 <h2 id="relevance-to-our-work">Relevance to Our Work</h2>
