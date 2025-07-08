@@ -223,6 +223,34 @@ stability.</p></li>
 <li><p>Can suffer if constituent methods are too similar or
 biased.</p></li>
 </ul>
+
+<h3>EFSIS (Ensemble Feature
+Selection Integrating Stability)</h3>
+
+<p>Combines two strategies:</p>
+<ul>
+<li><p>Function perturbation: Using various selection
+algorithms.</p></li>
+<li><p>Data perturbation: Applies each method on multiple bootstrapped
+datasets.</p></li>
+</ul>
+<p>Then it aggregates the frequency or consistency of each feature’s
+selection <span class="citation" data-cites="zhang2018efsis"></span>.
+Pros:</p>
+<ul>
+<li><p>Focuses explicitly on stability, a known weakness of many
+selection algorithms.</p></li>
+<li><p>Empirically improves robustness and generalization across
+datasets.</p></li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li><p>Higher computational cost (due to multiple runs per
+method).</p></li>
+<li><p>Parameter tuning (e.g., number of resamples) can affect the
+results.</p></li>
+</ul>      
+
 <p>
   
 </p>
@@ -230,11 +258,6 @@ biased.</p></li>
   
 </p>
 
-      
-      <ul>
-        <li><strong>Pros:</strong> Increases robustness, accuracy.</li>
-        <li><strong>Cons:</strong> Needs normalization, can be biased.</li>
-      </ul>
 
     </section>
 
