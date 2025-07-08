@@ -107,12 +107,13 @@
 
   <nav>
     <a href="#introduction">Introduction</a>
-        <a href="#2. Related Works">Related Works</a>
-
-    <a href="#methods">Methods</a>
-    <a href="#tradeoffs">Trade-Offs</a>
-    <a href="#relevance">Relevance</a>
-    <a href="#conclusion">Conclusion</a>
+    <a href="#related_works">Related Works</a>
+    <a href="#data_overview">Data Overview</a>
+    <a href="#methodology">Methodology</a>
+    <a href="#results">Results</a>
+    <a href="#discussion_and_conclusion">Discussion and Conclusion</a>
+    <a href="#future_work">Future Work</a>
+    <a href="#appendix">Appendix</a>
   </nav>
 
   <main>
@@ -197,7 +198,7 @@ most enduring challenges—efficient and effective feature selection in high-dim
 spaces—through a smart, regulated, and iterative ensemble pipeline.</p>
     </section>
 
-    <section id="methods">
+    <section id="related_works">
       <h2>2. Related Works</h2>
       <p>TEnsemble Feature Selection (EFS) is a family of techniques that aim to increase stability and accuracy by aggregating the results
 of multiple feature selection methods. The
@@ -336,9 +337,8 @@ thresholds.</p></li>
 <li><p>Slower than filter-based methods.</p></li>
 </ul>
 
-    </section>
 
-    <section id="tradeoffs">
+
       <h3>Summary of Trade-Offs</h3>
       <table>
         <thead>
@@ -354,7 +354,6 @@ thresholds.</p></li>
           <tr><td>Iterative</td><td>Controllable</td><td>Requires tuning</td></tr>
         </tbody>
       </table>
-    </section>
 
 <h3>Relevance to Our Work</h3>
 <p>This project builds upon the ideas of ensemble and iterative
@@ -373,7 +372,9 @@ dataset.</p></li>
 feature subsets — balancing interpretability, efficiency, and
 performance.</p>
 
+    </section>
 
+    <section id="data_overview">
       <h2>3. Data Overview</h2>
     <p>The SmartSelect framework is designed to be data-agnostic, capable of
 operating on a wide range of datasets without requiring prior domain
@@ -395,7 +396,9 @@ however, the system includes placeholders and compatible data loaders to
 allow seamless integration of external tabular datasets from .csv
 files.</p>
 
+    </section>
 
+    <section id="methodology">
           <h2>4. Methodology</h2>
 <h3>User Configuration</h3>
 <p>At the core of the SmartSelect framework is user flexibility. The
@@ -480,6 +483,9 @@ Diagram</h3>
 by SmartSelect, incorporating user-defined constraints and dynamic
 method evaluation.</figcaption>
 </figure>
+          </section>
+
+    <section id="results">
 <h2>5. Results</h2>
 <h3>Evaluation Procedure</h3>
 <p>To assess the performance of the SmartSelect framework, we tested it
@@ -528,6 +534,10 @@ Appendix.</strong></p>
 <img src="images/PAM_50_3.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = PAM50</figcaption>
 </figure>
+
+                </section>
+
+    <section id="discussion_and_conclusion">
 <h2>6. Discussion and Conclusion</h2>
 <p>This project introduced SmartSelect, an adaptive and modular
 framework for feature selection in high-dimensional tabular datasets. By
@@ -576,6 +586,10 @@ example</figcaption>
 <p>Overall, SmartSelect presents a practical, efficient, and scalable
 solution to the feature selection problem, particularly in environments
 where high dimensionality and runtime sensitivity pose challenges.</p>
+
+                      </section>
+
+    <section id="future_work">
 <h2>7. Future Work</h2>
 <p>While SmartSelect demonstrates strong performance across a variety of
 supervised learning tasks, several important extensions remain for
@@ -644,6 +658,10 @@ anomaly detection, where rare values can carry critical information.</p>
 strategies such as adaptive one-hot encoding, guided by feature
 cardinality or class imbalance, as an integral part of the selection
 process rather than a preprocessing step external to the system.</p>
+
+                            </section>
+
+    <section id="appendix">
 <h2>8. Appendix</h2>
 <h3>Full Results Across All
 Five Datasets</h3>
