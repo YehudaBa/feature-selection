@@ -235,7 +235,7 @@ algorithms.</p></li>
 datasets.</p></li>
 </ul>
 <p>Then it aggregates the frequency or consistency of each feature’s
-selection <span class="citation" data-cites="zhang2018efsis"></span>.
+selection.
 Pros:</p>
 <ul>
 <li><p>Focuses explicitly on stability, a known weakness of many
@@ -254,8 +254,9 @@ results.</p></li>
 (Feature Selection via Multiple Score Integration)</h3>
 <p>This method assigns each feature a unified score by integrating
 scores from multiple traditional methods. Instead of raw ranks, it uses
-weighted averages or voting mechanisms <span class="citation"
-data-cites="bhattacharyya2017efsmi"></span>. Pros:</p>
+weighted averages or voting mechanisms. 
+</p>
+      <p>Pros:</p>
 <ul>
 <li><p>Captures complementary insights from various methods.</p></li>
 <li><p>Demonstrates consistent performance gains in classification
@@ -272,7 +273,7 @@ Ensemble Feature Selection) </h3>
 <p>Combines homogeneous ensembles (e.g., using the same selection
 algorithm on different resampled datasets) and heterogeneous ensembles
 (e.g., different algorithms). Originally proposed for genomics data
-<span class="citation" data-cites="colombelli2021hybrid"></span>.</p>
+.</p>
 <p>Pros:</p>
 <ul>
 <li><p>High reproducibility across biomedical datasets.</p></li>
@@ -287,13 +288,11 @@ composition.</p></li>
 </ul>
 <p>Iterative and Adaptive Selection Techniques:</p>
 <p>Recent research also focuses on adaptive and iterative pipelines that
-refine feature selection over time <span class="citation"
-data-cites="feurer2015efficient"></span>.</p>
+refine feature selection over time.</p>
 <h3>Stability Selection</h3>
 <p>Introduced by Meinshausen and Bühlmann, this method combines LASSO
 with subsampling. It selects features that consistently appear across
-subsamples and penalization strengths <span class="citation"
-data-cites="meinshausen2010stability"></span></p>
+subsamples and penalization strengths </span></p>
 <p>Pros:</p>
 <ul>
 <li><p>Theoretical guarantees on controlling false positives.</p></li>
@@ -307,7 +306,8 @@ data-cites="meinshausen2010stability"></span></p>
 <h3>Boruta</h3>
 <p>A Random Forest-based wrapper method that compares the importance of
 real features to that of “shadow features” (randomly permuted copies)
-<span class="citation" data-cites="kursa2010boruta"></span>. Pros:</p>
+</span>.</p> 
+<p></p>Pros:</p>
 <ul>
 <li><p>All-relevant feature selection (not just
 minimal-optimal).</p></li>
@@ -333,18 +333,11 @@ thresholds.</p></li>
 <li><p>Sensitive to early feature choices.</p></li>
 <li><p>Slower than filter-based methods.</p></li>
 </ul>
-<p>
-  
-</p>
-      <p>
-  
-</p>
-
 
     </section>
 
     <section id="tradeoffs">
-      <h2>Summary of Trade-Offs</h2>
+      <h3>Summary of Trade-Offs</h3>
       <table>
         <caption>Comparison of Feature Selection Method Types</caption>
         <thead>
@@ -362,11 +355,29 @@ thresholds.</p></li>
       </table>
     </section>
 
-    <section id="relevance">
-      <h2>Relevance to Our Work</h2>
-      <p>This project builds on ensemble and iterative selection...</p>
-      <!-- המשך תיאור הרלוונטיות כפי שבקובץ שלך -->
-    </section>
+<h3>Relevance to Our Work</h3>
+<p>This project builds upon the ideas of ensemble and iterative
+selection, proposing a smart, regulated, and adaptive ensemble pipeline
+that:</p>
+<ul>
+<li><p>Combines diverse selection strategies.</p></li>
+<li><p>Iteratively refines the feature set using the best available
+model at each stage.</p></li>
+<li><p>Respect user constraints like maximum runtime, number/percentage
+of features, or memory budget.</p></li>
+<li><p>It is fully data-agnostic and adaptable to any tabular
+dataset.</p></li>
+</ul>
+<p>This hybrid approach is designed to deliver high-quality, explainable
+feature subsets — balancing interpretability, efficiency, and
+performance.></span></p>
+
+
+      <h2>Data Overview</h2>
+
+
+
+
 
     <section id="conclusion">
       <h2>Conclusion & Future Work</h2>
