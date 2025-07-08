@@ -115,7 +115,7 @@
 
   <main>
     <section id="introduction">
-      <h2>Introduction</h2>
+      <h2>1 Introduction</h2>
       <p>In today’s data-driven landscape, machine
 learning models are frequently tasked with
 analyzing high-dimensional datasets—those
@@ -196,7 +196,7 @@ spaces—through a smart, regulated, and iterative ensemble pipeline.</p>
     </section>
 
     <section id="methods">
-      <h2>Related Works</h2>
+      <h2>2 Related Works</h2>
       <p>TEnsemble Feature Selection (EFS) is a family of techniques that aim to increase stability and accuracy by aggregating the results
 of multiple feature selection methods. The
 motivation is similar to ensemble learning in
@@ -372,7 +372,7 @@ feature subsets — balancing interpretability, efficiency, and
 performance.</p>
 
 
-      <h2>Data Overview</h2>
+      <h2>3 Data Overview</h2>
     <p>The SmartSelect framework is designed to be data-agnostic, capable of
 operating on a wide range of datasets without requiring prior domain
 knowledge. It is tailored for tabular datasets, where each sample is
@@ -394,22 +394,22 @@ allow seamless integration of external tabular datasets from .csv
 files.</p>
 
 
-          <h2>Methodology</h2>
-<h2 id="user-configuration">User Configuration</h2>
+          <h2>4 Methodology</h2>
+<h3>User Configuration</h3>
 <p>At the core of the SmartSelect framework is user flexibility. The
 user is required to define the maximum computational complexity they are
 willing to tolerate for both the feature selection phase and for the
 final benchmark model (described in detail below). This configuration
 enables SmartSelect to adjust its internal operations to the user’s time
 or resource constraints.</p>
-<h2 id="determining-the-number-of-selected-features">Determining the
-Number of Selected Features</h2>
+<h3>Determining the
+Number of Selected Features</h3>
 <p>Users can explicitly specify the desired number of features to be
 selected, either as an absolute value or as a percentage of the original
 feature set. If no specification is provided, SmartSelect defaults to
 selecting a number of features equal to the square root of the number of
 data samples.</p>
-<h2 id="feature-selection-strategy">Feature Selection Strategy</h2>
+<h3>Feature Selection Strategy</h3>
 <p>A predefined list of feature selection methods is constructed,
 ordered according to their perceived quality. Since the quality of
 feature selection methods can be subjective and context-dependent, SmartSelect
@@ -438,7 +438,7 @@ method is required to retain at least:</p>
 <li><p>No fewer features than the final target number specified by the
 user (if defined).</p></li>
 </ul>
-<h2 id="stopping-criteria">Stopping Criteria</h2>
+<h3>Stopping Criteria</h3>
 <p>The iterative selection process stops when any of the following
 conditions are met:</p>
 <ol>
@@ -453,7 +453,7 @@ filtering, yet the dimensionality is still too high to run the benchmark
 model. The system will again prompt the user to relax the complexity
 constraint of the benchmark model.</p></li>
 </ol>
-<h2 id="benchmark-model">Benchmark Model</h2>
+<h3>Benchmark Model</h3>
 <p>The benchmark model is designed to act as an independent,
 high-quality evaluator of the final feature sets.</p>
 <p>Once the feature space is reduced to a level that permits execution
@@ -470,16 +470,16 @@ appropriate metric (e.g., RMSE for regression or F1 score for
 classification).</p>
 <p>The subset that achieves the best score on the test set is selected
 as the final feature set output by SmartSelect.</p>
-<h2 id="feature-selection-workflow-diagram">Feature Selection Workflow
-Diagram</h2>
+<h3>Feature Selection Workflow
+Diagram</h3>
 <figure id="fig:feature_selection_flow_grid">
 <img src="images/feature_selection_flow_grid.png" style="width:70.0%" />
 <figcaption>Illustrates the iterative feature selection process employed
 by SmartSelect, incorporating user-defined constraints and dynamic
 method evaluation.</figcaption>
 </figure>
-<h2 id="results">Results</h2>
-<h2 id="evaluation-procedure">Evaluation Procedure</h2>
+<h2>Results</h2>
+<h3>Evaluation Procedure</h3>
 <p>To assess the performance of the SmartSelect framework, we tested it
 across multiple tabular datasets encompassing both regression and
 classification problems. Each dataset was divided into training and test
@@ -490,7 +490,7 @@ individually.</p>
 and evaluated on the test set. The performance metric depended on the
 task type: F1 score for classification and mean squared error (MSE) for
 regression.</p>
-<h2 id="performance-comparison">Performance Comparison</h2>
+<h3>Performance Comparison</h3>
 <p>Across all experiments, SmartSelect consistently outperformed
 individual feature selection methods in predictive performance on the
 test set,
@@ -501,7 +501,7 @@ runs of SmartSelect, we obtained a mean squared error (MSE) of 0.00784,
 with a standard deviation of 0.00026 and a maximum value of 0.00833.</p>
 <p>In comparison, the Variance Threshold method (It only ran once, since
 it’s a deterministic method) resulted in an MSE of 0.01242.</p>
-<h2 id="example-results">Example Results</h2>
+<h3>Example Results</h3>
 <p>The figure below presents a representative result comparing
 SmartSelect with a baseline feature selection method on the SCANB
 dataset. Target: PAM50 — LumA vs. others.</p>
@@ -526,7 +526,7 @@ Appendix.</strong></p>
 <img src="images/PAM_50_3.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = PAM50</figcaption>
 </figure>
-<h2>Discussion and Conclusion</h2>
+<h2>6 Discussion and Conclusion</h2>
 <p>This project introduced SmartSelect, an adaptive and modular
 framework for feature selection in high-dimensional tabular datasets. By
 integrating multiple selection techniques in a controlled iterative
@@ -578,8 +578,8 @@ where high dimensionality and runtime sensitivity pose challenges.</p>
 <p>While SmartSelect demonstrates strong performance across a variety of
 supervised learning tasks, several important extensions remain for
 future research and development.</p>
-<h2 id="support-for-unsupervised-learning">Support for Unsupervised
-Learning</h2>
+<h3>Support for Unsupervised
+Learning</h3>
 <p>Currently, SmartSelect is designed for supervised scenarios, where
 ground-truth labels allow for clear evaluation metrics and benchmarking.
 Extending the framework to support unsupervised learning tasks presents
@@ -591,7 +591,7 @@ proxy objectives to assess feature quality in unsupervised contexts.
 Moreover, the internal selection mechanisms and benchmark model
 architecture would need to be adapted to operate in unsupervised
 pipelines.</p>
-<h2 id="supervised-anomaly-detection">Supervised Anomaly Detection</h2>
+<h3>Supervised Anomaly Detection</h3>
 <p>Another future task is adapting SmartSelect for supervised anomaly
 detection tasks. The current system is optimized for traditional
 supervised prediction, where average performance across the dataset
@@ -609,30 +609,30 @@ detection.</p>
 strategy to preserve redundant but informative patterns, and potentially
 developing new evaluation criteria that reflect anomaly-specific utility
 rather than average-case accuracy.</p>
-<h2 id="multiclass-classification-support">Multiclass Classification
-Support</h2>
+<h3>Multiclass Classification
+Support</h3>
 <p>Currently, SmartSelect works in binary classification and regression
 settings. Extending the framework to better support multiclass
 classification would involve adjustments in both evaluation metrics
 (e.g., macro/micro-averaged F1 scores) and in the benchmark model’s
 architecture and selection thresholds.</p>
-<h2 id="parallel-execution-of-selection-methods">Parallel Execution of
-Selection Methods</h2>
+<h3>Parallel Execution of
+Selection Methods</h3>
 <p>The current implementation evaluates feature selection methods
 sequentially. However, in the benchmark stage—multiple methods could be
 evaluated in parallel without exceeding runtime constraints.
 Incorporating parallel execution for compatible methods in the benchmark
 phase could significantly reduce overall processing time.</p>
-<h2 id="user-control-over-method-parameters-and-regularization">User
-Control Over Method Parameters and Regularization</h2>
+<h3>User
+Control Over Method Parameters and Regularization</h3>
 <p>In its current form, SmartSelect uses fixed thresholds for method
 behavior, such as the minimum number of features retained. Providing the
 user with greater control over parameters and regularization
 constraints, such as specifying the minimum or maximum percentage of
 features each method is allowed to retain, would make the system more
 adaptable to different use cases and domain-specific requirements.</p>
-<h2 id="support-for-non-numerical-features">Support for Non-Numerical
-Features</h2>
+<h3>Support for Non-Numerical
+Features</h3>
 <p>SmartSelect currently assumes that all input features have been
 preprocessed into numerical form. However, the transformation of
 categorical features can have a major impact on the relevance and
@@ -642,9 +642,9 @@ anomaly detection, where rare values can carry critical information.</p>
 strategies such as adaptive one-hot encoding, guided by feature
 cardinality or class imbalance, as an integral part of the selection
 process rather than a preprocessing step external to the system.</p>
-<h2>Appendix</h2>
-<h2 id="full-results-across-all-five-datasets">Full Results Across All
-Five Datasets</h2>
+<h2>8 Appendix</h2>
+<h3>Full Results Across All
+Five Datasets</h3>
 <p>This appendix presents the complete results for all five datasets
 evaluated in our experiments, including the dataset shown in the main
 paper.</p>
