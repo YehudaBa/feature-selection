@@ -1,239 +1,290 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SmartSelect — Feature Selection Framework</title>
+  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Student 2 Reichman University ID: 87654321" />
+  <meta name="dcterms.date" content="2025-07-02" />
+  <title> Final Project Report Project Name </title>
   <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #333;
-      margin: 0;
-      background-color: #f5f7fa;
-      line-height: 1.7;
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
     }
-    header {
-      background: #2c3e50;
-      color: #fff;
-      padding: 2rem 1rem;
-      text-align: center;
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+       {
+        font-size: 1.8em;
+      }
     }
-    header h1 { margin: 0; font-size: 2.2rem; }
-    header p { margin-top: 0.5rem; font-size: 1rem; }
-    nav {
-      background: #2980b9;
-      padding: 0.5rem 1rem;
-        position: sticky;
-  top: 0;
-  z-index: 1000;
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
     }
-
-    nav a {
-      color: #fff;
-      margin-right: 1rem;
-      text-decoration: none;
-      font-weight: bold;
+    p {
+      margin: 1em 0;
     }
-    nav a:hover {
-      text-decoration: underline;
+    a {
+      color: #1a1a1a;
     }
-    main {
-      max-width: 900px;
-      background: #fff;
-      margin: -1rem auto 2rem;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-    section {
-  margin-bottom: 2rem;
-  scroll-margin-top: 100px; 
-  }
-    h2 { scroll-margin-top: 120px; border-bottom: 2px solid #e1e4e8; padding-bottom: 0.4rem; color: #2c3e50; }
-    p { margin: 1rem 0; }
-    ul { margin: 1rem 0 1rem 1.5rem; }
-    code {
-      background: #f4f6f8;
-      padding: 2px 5px;
-      border-radius: 4px;
-      font-family: monospace;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1rem 0;
-    }
-    caption {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      color: #34495e;
-    }
-    th, td {
-      border: 1px solid #e1e4e8;
-      padding: 12px;
-      text-align: center;
-    }
-    th {
-      background: #2980b9;
-      color: #fff;
-    }
-    tr:hover {
-      background: #ecf0f1;
+    a:visited {
+      color: #1a1a1a;
     }
     img {
       max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    , h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
       display: block;
-      margin: 1rem auto;
-      border-radius: 4px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      font-variant-numeric: lining-nums tabular-nums;
     }
-    footer {
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
       text-align: center;
-      padding: 2rem;
-      font-size: 0.9rem;
-      color: #888;
     }
-.nav-button {
-  display: inline-block;
-  background-color: #2980b9;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: bold;
-  margin-top: 1rem;
-  transition: background-color 0.3s ease, text-decoration 0.3s ease;
-}
-
-.nav-button:hover {
-  background-color: #2471a3; 
-  text-decoration: underline;
-}
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
 </head>
 <body>
+  <figure id="fig:runi_logo">
+<img src="images/runi_logo.png" style="width:70.0%" />
+</figure>
+<header id="title-block-header">
+<h1 class="title"> <strong>Reichman University</strong><br />
+</h1>
+<h2 class="title"> <strong>Efi Arazi School of Computer Science</strong><br />
+</h2>
+<h2 class="title"> <strong>M.Sc. Program in Machine Learning and Data Science</strong><br />
+</h2>
+  <h0 id="SeperatorLine"> </h0>
 
-  <header>
-    <h1>SmartSelect</h1>
-    <p>Feature Selection for High-Dimensional Data</p>
-    <p><a href="https://www.linkedin.com/in/yehuda-baharav/"  style="color:#ffffff"><strong>Yehuda Baharav</strong></a></p>
-<p>
-<a href="https://github.com/YehudaBa/feature-selection/blob/main/docs/SmartSelect.pdf" class="nav-button" target="_blank">
-  📄 View Full Academic Paper (PDF)
-</a>
-</p>
-  </header>
+<h1 class="title"> <strong>Final Project Report</strong><br />
+</h1>
+<h2 > <strong>SmartSelect</strong><br />
+</h2>
+<p class="author"><strong>Yehuda Baharav</strong><br />
 
-  <nav>
-    <a href="#introduction">Introduction</a>
-    <a href="#related_works">Related Works</a>
-    <a href="#data_overview">Data Overview</a>
-    <a href="#methodology">Methodology</a>
-    <a href="#results">Results</a>
-    <a href="#discussion_and_conclusion">Discussion and Conclusion</a>
-    <a href="#future_work">Future Work</a>
-    <a href="#appendix">Appendix</a>
-  </nav>
-
-  <main>
-    <section id="introduction">
-      <h2>1. Introduction</h2>
-      <p>In today’s data-driven landscape, machine
-learning models are frequently tasked with
-analyzing high-dimensional datasets—those
-containing hundreds, thousands, or even millions of features. This challenge is particularly pronounced in domains such as
-genomics, cybersecurity, image and speech
-recognition, and general data science, where
-data often includes a vast number of variables
-relative to the number of observations.</p>
-      
-<p>While having access to a large number of features might seem advantageous, in practice,
-it often introduces serious complications. Redundant, irrelevant, or noisy features can obscure the underlying patterns in the data,
-leading to decreased predictive performance.
-Additionally, they significantly increase the
-computational burden during model training
-and inference, which is particularly problematic when working under constraints of time
-or limited computing resources. In extreme cases, the presence of such features can
-even mislead the model, causing it to learn
-spurious correlations instead of meaningful
+<p class="author">Advisor<br />
+  <strong>Ben Galili</strong><br />
+<p class="date">2025-06-19</p>
+</header>
+<h0 id="introduction">Introduction</h0>
+<p>In today’s data-driven landscape, machine learning models are
+frequently tasked with analyzing high-dimensional datasets—those
+containing hundreds, thousands, or even millions of features. This
+challenge is particularly pronounced in domains such as genomics,
+cybersecurity, image and speech recognition, and general data science,
+where data often includes a vast number of variables relative to the
+number of observations <span class="citation"
+data-cites="guyon2003introduction"></span>.</p>
+<p>While having access to a large number of features might seem
+advantageous, in practice, it often introduces serious complications.
+Redundant, irrelevant, or noisy features can obscure the underlying
+patterns in the data, leading to decreased predictive performance.
+Additionally, they significantly increase the computational burden
+during model training and inference, which is particularly problematic
+when working under constraints of time or limited computing resources
+<span class="citation" data-cites="datacamp2024curse"></span>. In
+extreme cases, the presence of such features can even mislead the model,
+causing it to learn spurious correlations instead of meaningful
 insights.</p>
-
-<p>Feature selection—a critical preprocessing
-step in the machine learning pipeline—aims
-to address these challenges. By identifying
-and retaining only the most relevant and informative features, feature selection can improve model accuracy, reduce overfitting, accelerate training, and enhance interpretability. However, no single feature selection technique works best in all scenarios.
-Some methods are statistically rigorous but
-computationally intensive, making them impractical for large-scale datasets. Others are
-fast and scalable but may compromise on selection quality, potentially overlooking subtle
-but important variables.</p>
-
-<p>This project introduces a smart ensemble approach to feature selection, which combines
-the strengths of multiple existing methods
-to achieve a robust balance between performance (in terms of selection quality and resulting model accuracy) and efficiency (in
-terms of runtime and resource usage). Ensemble feature selection has been shown to
-improve stability and accuracy by aggregating results from multiple base methods.</p>
-
-<p>A key innovation of this approach lies in its
-iterative pipeline structure. Instead of performing feature selection in a single pass,
-the system proceeds through multiple controlled iterations. In each iteration, it evaluates the feature set using the best available model—determined dynamically based
-on current constraints and performance metrics. These constraints, or regulations, include user-defined parameters such as maximum runtime, memory limits, or a cap on
-the number of features. The model choice at
-each step is adaptive: for example, the system
-might choose a simple and fast model early
-in the process to rapidly eliminate uninformative features, and then refine the selection
-using a more complex and accurate model as
-the feature space becomes smaller and more
-manageable.</p>
-
-<p>This regulated, adaptive, and iterative process ensures that the pipeline remains both
-efficient and effective across a wide range of
-use cases and datasets. It continuously optimizes feature selection quality while respecting practical constraints, striking an optimal
-trade-off between speed and accuracy.</p>
-
-<p>Furthermore, the implementation offers a
-high degree of user customization and control. Users can specify a range of parameters
-according to their needs and constraints, including:
+<p>Feature selection—a critical preprocessing step in the machine
+learning pipeline—aims to address these challenges. By identifying and
+retaining only the most relevant and informative features, feature
+selection can improve model accuracy, reduce overfitting, accelerate
+training, and enhance interpretability <span class="citation"
+data-cites="kohavi1997wrappers"></span>. However, no single feature
+selection technique works best in all scenarios. Some methods are
+statistically rigorous but computationally intensive, making them
+impractical for large-scale datasets. Others are fast and scalable but
+may compromise on selection quality, potentially overlooking subtle but
+important variables.</p>
+<p>This project introduces a smart ensemble approach to feature
+selection, which combines the strengths of multiple existing methods to
+achieve a robust balance between performance (in terms of selection
+quality and resulting model accuracy) and efficiency (in terms of
+runtime and resource usage). Ensemble feature selection has been shown
+to improve stability and accuracy by aggregating results from multiple
+base methods <span class="citation"
+data-cites="garcia2020big"></span>.</p>
+<p>A key innovation of this approach lies in its iterative pipeline
+structure. Instead of performing feature selection in a single pass, the
+system proceeds through multiple controlled iterations. In each
+iteration, it evaluates the feature set using the best available
+model—determined dynamically based on current constraints and
+performance metrics. These constraints, or regulations, include
+user-defined parameters such as maximum runtime, memory limits, or a cap
+on the number of features. The model choice at each step is adaptive:
+for example, the system might choose a simple and fast model early in
+the process to rapidly eliminate uninformative features, and then refine
+the selection using a more complex and accurate model as the feature
+space becomes smaller and more manageable.</p>
+<p>This regulated, adaptive, and iterative process ensures that the
+pipeline remains both efficient and effective across a wide range of use
+cases and datasets. It continuously optimizes feature selection quality
+while respecting practical constraints, striking an optimal trade-off
+between speed and accuracy.</p>
+<p>Furthermore, the implementation offers a high degree of user
+customization and control. Users can specify a range of parameters
+according to their needs and constraints, including:</p>
 <ul>
-  <li>The target number of features (either as
-an exact number or a percentage of the
-original set).</li>
-  <li>Maximum allowable runtime.</li>
-  <li>Preferred feature selection strategies to
-include in the ensemble.</li>
-   <li>Tolerance levels for correlation or redundancy among selected features, and
-more.</li>
+<li><p>The target number of features (either as an exact number or a
+percentage of the original set).</p></li>
+<li><p>Maximum allowable runtime.</p></li>
+<li><p>Preferred feature selection strategies to include in the
+ensemble.</p></li>
+<li><p>Tolerance levels for correlation or redundancy among selected
+features, and more.</p></li>
 </ul>
-</p>
-
-<p>The approach is also data-agnostic, making
-no assumptions about the structure, scale, or
-domain of the input data. This enables it to
-be applied across disciplines, from healthcare
-to finance to engineering.</p>
-
-<p>In summary, the proposed system seeks to
-provide a practical, powerful, and adaptable solution to one of machine learning’s
-most enduring challenges—efficient and effective feature selection in high-dimensional
-spaces—through a smart, regulated, and iterative ensemble pipeline.</p>
-    </section>
-
-    <section id="related_works">
-      <h2>2. Related Works</h2>
-      <p>Ensemble Feature Selection (EFS) is a family of techniques that aim to increase stability and accuracy by aggregating the results
-of multiple feature selection methods. The
-motivation is similar to ensemble learning in
-classification: reducing variance and bias by
-combining diverse perspectives</p>
-      
-      <h3>EFS (Ensemble Feature Selection Framework)</h3>
-<p>
-  A software tool that integrates the results of
-eight feature selection algorithms (e.g., ReliefF, SVM-RFE, Random Forest importance)
-by normalizing and aggregating their feature
-rankings or scores
-</p>
-      <p>Pros:</p>
+<p>The approach is also data-agnostic, making no assumptions about the
+structure, scale, or domain of the input data. This enables it to be
+applied across disciplines, from healthcare to finance to
+engineering.</p>
+<p>In summary, the proposed system seeks to provide a practical,
+powerful, and adaptable solution to one of machine learning’s most
+enduring challenges—efficient and effective feature selection in
+high-dimensional spaces—through a smart, regulated, and iterative
+ensemble pipeline.</p>
+<h0 id="related-works">Related Works</h0>
+<p>Ensemble Feature Selection (EFS) is a family of techniques that aim
+to increase stability and accuracy by aggregating the results of
+multiple feature selection methods. The motivation is similar to
+ensemble learning in classification: reducing variance and bias by
+combining diverse perspectives <span class="citation"
+data-cites="saeys2008review"></span>.</p>
+<h2 id="efs-ensemble-feature-selection-framework">EFS (Ensemble Feature
+Selection Framework)</h2>
+<p>A software tool that integrates the results of eight feature
+selection algorithms (e.g., ReliefF, SVM-RFE, Random Forest importance)
+by normalizing and aggregating their feature rankings or scores <span
+class="citation" data-cites="neumann2017efs"></span></p>
+<p>Pros:</p>
 <ul>
 <li><p>Increases robustness against noise or data
 perturbations.</p></li>
@@ -246,10 +297,8 @@ stability.</p></li>
 <li><p>Can suffer if constituent methods are too similar or
 biased.</p></li>
 </ul>
-
-<h3>EFSIS (Ensemble Feature
-Selection Integrating Stability)</h3>
-
+<h2 id="efsis-ensemble-feature-selection-integrating-stability">EFSIS
+(Ensemble Feature Selection Integrating Stability)</h2>
 <p>Combines two strategies:</p>
 <ul>
 <li><p>Function perturbation: Using various selection
@@ -258,9 +307,8 @@ algorithms.</p></li>
 datasets.</p></li>
 </ul>
 <p>Then it aggregates the frequency or consistency of each feature’s
-selection.
-</p>
-<p>Pros:</p>
+selection <span class="citation" data-cites="zhang2018efsis"></span>.
+Pros:</p>
 <ul>
 <li><p>Focuses explicitly on stability, a known weakness of many
 selection algorithms.</p></li>
@@ -273,14 +321,13 @@ datasets.</p></li>
 method).</p></li>
 <li><p>Parameter tuning (e.g., number of resamples) can affect the
 results.</p></li>
-</ul>      
-<h3>FS-MSI
-(Feature Selection via Multiple Score Integration)</h3>
+</ul>
+<h2 id="fs-msi-feature-selection-via-multiple-score-integration">FS-MSI
+(Feature Selection via Multiple Score Integration)</h2>
 <p>This method assigns each feature a unified score by integrating
 scores from multiple traditional methods. Instead of raw ranks, it uses
-weighted averages or voting mechanisms. 
-</p>
-      <p>Pros:</p>
+weighted averages or voting mechanisms <span class="citation"
+data-cites="bhattacharyya2017efsmi"></span>. Pros:</p>
 <ul>
 <li><p>Captures complementary insights from various methods.</p></li>
 <li><p>Demonstrates consistent performance gains in classification
@@ -292,12 +339,12 @@ tasks.</p></li>
 <li><p>Lacks model-specific adaptation unless combined with downstream
 learning.</p></li>
 </ul>
-<h3>Hyb-EFS (Hybrid
-Ensemble Feature Selection) </h3>
+<h2 id="hyb-efs-hybrid-ensemble-feature-selection">Hyb-EFS (Hybrid
+Ensemble Feature Selection) </h2>
 <p>Combines homogeneous ensembles (e.g., using the same selection
 algorithm on different resampled datasets) and heterogeneous ensembles
 (e.g., different algorithms). Originally proposed for genomics data
-.</p>
+<span class="citation" data-cites="colombelli2021hybrid"></span>.</p>
 <p>Pros:</p>
 <ul>
 <li><p>High reproducibility across biomedical datasets.</p></li>
@@ -312,11 +359,13 @@ composition.</p></li>
 </ul>
 <p>Iterative and Adaptive Selection Techniques:</p>
 <p>Recent research also focuses on adaptive and iterative pipelines that
-refine feature selection over time.</p>
-<h3>Stability Selection</h3>
+refine feature selection over time <span class="citation"
+data-cites="feurer2015efficient"></span>.</p>
+<h2 id="stability-selection">Stability Selection</h2>
 <p>Introduced by Meinshausen and Bühlmann, this method combines LASSO
 with subsampling. It selects features that consistently appear across
-subsamples and penalization strengths </span></p>
+subsamples and penalization strengths <span class="citation"
+data-cites="meinshausen2010stability"></span></p>
 <p>Pros:</p>
 <ul>
 <li><p>Theoretical guarantees on controlling false positives.</p></li>
@@ -327,11 +376,10 @@ subsamples and penalization strengths </span></p>
 <li><p>Relatively slow.</p></li>
 <li><p>May miss weak but important features.</p></li>
 </ul>
-<h3>Boruta</h3>
+<h2 id="boruta">Boruta</h2>
 <p>A Random Forest-based wrapper method that compares the importance of
 real features to that of “shadow features” (randomly permuted copies)
-</span>.</p> 
-<p></p>Pros:</p>
+<span class="citation" data-cites="kursa2010boruta"></span>. Pros:</p>
 <ul>
 <li><p>All-relevant feature selection (not just
 minimal-optimal).</p></li>
@@ -342,12 +390,11 @@ minimal-optimal).</p></li>
 <li><p>Computationally heavy.</p></li>
 <li><p>Tends to retain many correlated features.</p></li>
 </ul>
-<h3>Recursive Feature Addition
-(RFA)</h3>
+<h2 id="recursive-feature-addition-rfa">Recursive Feature Addition
+(RFA)</h2>
 <p>Starts with an empty set and adds features one-by-one, evaluating
 model performance (e.g., using cross-validation) at each iteration.
-</p>
-<p>Pros:</p>
+Pros:</p>
 <ul>
 <li><p>Controlled and explainable process.</p></li>
 <li><p>Can terminate early based on runtime or performance
@@ -358,26 +405,48 @@ thresholds.</p></li>
 <li><p>Sensitive to early feature choices.</p></li>
 <li><p>Slower than filter-based methods.</p></li>
 </ul>
+<div id="tab:example">
+<table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; text-align: center;">
+  <caption><strong>Summary of Trade-Offs</strong></caption>
+  <thead>
+    <tr>
+      <th>Method Type</th>
+      <th>Pros</th>
+      <th>Cons</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Filter</td>
+      <td>Scalable, general</td>
+      <td>Ignores feature interactions</td>
+    </tr>
+    <tr>
+      <td>Wrapper</td>
+      <td>High accuracy, interaction-aware</td>
+      <td>High risk of overfitting, slow</td>
+    </tr>
+    <tr>
+      <td>Embedded</td>
+      <td>Integrated with model, specific</td>
+      <td>Sensitive to early feature choices</td>
+    </tr>
+    <tr>
+      <td>Ensemble</td>
+      <td>Robust, hybrid</td>
+      <td>Computationally intensive</td>
+    </tr>
+    <tr>
+      <td>Iterative</td>
+      <td>Controllable</td>
+      <td>Requires tuning</td>
+    </tr>
+  </tbody>
+</table>
 
-
-
-      <h3>Summary of Trade-Offs</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Method Type</th><th>Pros</th><th>Cons</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Filter</td><td>Fast, scalable, general-purpose</td><td>Ignores interactions</td></tr>
-          <tr><td>Wrapper</td><td>Accurate, interaction-aware</td><td>Overfitting risk, slow</td></tr>
-          <tr><td>Embedded</td><td>Efficient, model-specific</td><td>Model-dependent, computationally complex</td></tr>
-          <tr><td>Ensemble</td><td>Robust, hybrid</td><td>Compute-heavy</td></tr>
-          <tr><td>Iterative</td><td>Thorough, flexible, robust</td><td>Computationally expensive, time-consuming</td></tr>
-        </tbody>
-      </table>
-
-<h3>Relevance to Our Work</h3>
+</div>
+<p><span id="tab:example" data-label="tab:example"></span></p>
+<h2 id="relevance-to-our-work">Relevance to Our Work</h2>
 <p>This project builds upon the ideas of ensemble and iterative
 selection, proposing a smart, regulated, and adaptive ensemble pipeline
 that:</p>
@@ -392,18 +461,14 @@ dataset.</p></li>
 </ul>
 <p>This hybrid approach is designed to deliver high-quality, explainable
 feature subsets — balancing interpretability, efficiency, and
-performance.</p>
-
-    </section>
-
-    <section id="data_overview">
-      <h2>3. Data Overview</h2>
-    <p>The SmartSelect framework is designed to be data-agnostic, capable of
+performance. <span class="citation"
+data-cites="garcia2020big"></span></p>
+<h0 id="data-overview">Data Overview</h0>
+<p>The SmartSelect framework is designed to be data-agnostic, capable of
 operating on a wide range of datasets without requiring prior domain
 knowledge. It is tailored for tabular datasets, where each sample is
 represented by multiple features (columns) and a single target column
-. 
-The
+<span class="citation" data-cites="shang2021tabular"></span>. The
 framework supports both regression and classification problems, as long
 as they are supervised, meaning that ground-truth labels for the target
 variable are provided.</p>
@@ -417,29 +482,26 @@ scenarios.</p>
 however, the system includes placeholders and compatible data loaders to
 allow seamless integration of external tabular datasets from .csv
 files.</p>
-
-    </section>
-
-    <section id="methodology">
-          <h2>4. Methodology</h2>
-<h3>User Configuration</h3>
+<h0 id="methodology">Methodology</h0>
+<h2 id="user-configuration">User Configuration</h2>
 <p>At the core of the SmartSelect framework is user flexibility. The
 user is required to define the maximum computational complexity they are
 willing to tolerate for both the feature selection phase and for the
 final benchmark model (described in detail below). This configuration
 enables SmartSelect to adjust its internal operations to the user’s time
 or resource constraints.</p>
-<h3>Determining the
-Number of Selected Features</h3>
+<h2 id="determining-the-number-of-selected-features">Determining the
+Number of Selected Features</h2>
 <p>Users can explicitly specify the desired number of features to be
 selected, either as an absolute value or as a percentage of the original
 feature set. If no specification is provided, SmartSelect defaults to
 selecting a number of features equal to the square root of the number of
 data samples.</p>
-<h3>Feature Selection Strategy</h3>
+<h2 id="feature-selection-strategy">Feature Selection Strategy</h2>
 <p>A predefined list of feature selection methods is constructed,
 ordered according to their perceived quality. Since the quality of
-feature selection methods can be subjective and context-dependent, SmartSelect
+feature selection methods can be subjective and context-dependent <span
+class="citation" data-cites="bolon2015recent"></span>, SmartSelect
 provides a default ranking which the user can later modify.</p>
 <p>The framework then iteratively evaluates each method in the list
 against the user-defined computational complexity threshold:</p>
@@ -465,7 +527,7 @@ method is required to retain at least:</p>
 <li><p>No fewer features than the final target number specified by the
 user (if defined).</p></li>
 </ul>
-<h3>Stopping Criteria</h3>
+<h2 id="stopping-criteria">Stopping Criteria</h2>
 <p>The iterative selection process stops when any of the following
 conditions are met:</p>
 <ol>
@@ -480,7 +542,7 @@ filtering, yet the dimensionality is still too high to run the benchmark
 model. The system will again prompt the user to relax the complexity
 constraint of the benchmark model.</p></li>
 </ol>
-<h3>Benchmark Model</h3>
+<h2 id="benchmark-model">Benchmark Model</h2>
 <p>The benchmark model is designed to act as an independent,
 high-quality evaluator of the final feature sets.</p>
 <p>Once the feature space is reduced to a level that permits execution
@@ -497,19 +559,17 @@ appropriate metric (e.g., RMSE for regression or F1 score for
 classification).</p>
 <p>The subset that achieves the best score on the test set is selected
 as the final feature set output by SmartSelect.</p>
-<h3>Feature Selection Workflow
-Diagram</h3>
-<figure id="fig:feature_selection_flow_grid", style="text-align: center;">
+<p><span class="citation" data-cites="chen2016xgboost"></span></p>
+<h2 id="feature-selection-workflow-diagram">Feature Selection Workflow
+Diagram</h2>
+<figure id="fig:feature_selection_flow_grid">
 <img src="images/feature_selection_flow_grid.png" style="width:70.0%" />
 <figcaption>Illustrates the iterative feature selection process employed
 by SmartSelect, incorporating user-defined constraints and dynamic
 method evaluation.</figcaption>
 </figure>
-          </section>
-
-    <section id="results">
-<h2>5. Results</h2>
-<h3>Evaluation Procedure</h3>
+<h0 id="results">Results</h0>
+<h2 id="evaluation-procedure">Evaluation Procedure</h2>
 <p>To assess the performance of the SmartSelect framework, we tested it
 across multiple tabular datasets encompassing both regression and
 classification problems. Each dataset was divided into training and test
@@ -520,18 +580,18 @@ individually.</p>
 and evaluated on the test set. The performance metric depended on the
 task type: F1 score for classification and mean squared error (MSE) for
 regression.</p>
-<h3>Performance Comparison</h3>
+<h2 id="performance-comparison">Performance Comparison</h2>
 <p>Across all experiments, SmartSelect consistently outperformed
 individual feature selection methods in predictive performance on the
-test set,
+test set <span class="citation" data-cites="guyon2006feature"></span>,
 while maintaining reasonable runtime.</p>
 <p>The most competitive baseline was observed on the SCANB dataset for a
-regression task with Lympho column as the label. Over 100 independent
+regression task with Lympho column as the label. Over 20 independent
 runs of SmartSelect, we obtained a mean squared error (MSE) of 0.00784,
 with a standard deviation of 0.00026 and a maximum value of 0.00833.</p>
 <p>In comparison, the Variance Threshold method (It only ran once, since
 it’s a deterministic method) resulted in an MSE of 0.01242.</p>
-<h3>Example Results</h3>
+<h2 id="example-results">Example Results</h2>
 <p>The figure below presents a representative result comparing
 SmartSelect with a baseline feature selection method on the SCANB
 dataset. Target: PAM50 — LumA vs. others.</p>
@@ -544,23 +604,19 @@ Appendix.</strong></p>
 <li><p>Binary Classification (Target: PAM50 — LumA vs. others)</p></li>
 <li><p>Average running time of SmartSelect:  10 minutes</p></li>
 </ul>
-<figure id="fig:PAM_50_1", style="text-align: center;">
+<figure id="fig:PAM_50_1">
 <img src="images/PAM_50_1.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = PAM50</figcaption>
 </figure>
-<figure id="fig:PAM_50_2", style="text-align: center;">
+<figure id="fig:PAM_50_2">
 <img src="images/PAM_50_2.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = PAM50</figcaption>
 </figure>
-<figure id="fig:PAM_50_3", style="text-align: center;">
+<figure id="fig:PAM_50_3">
 <img src="images/PAM_50_3.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = PAM50</figcaption>
 </figure>
-
-                </section>
-
-    <section id="discussion_and_conclusion">
-<h2>6. Discussion and Conclusion</h2>
+<h0 id="discussion-and-conclusion">Discussion and Conclusion</h0>
 <p>This project introduced SmartSelect, an adaptive and modular
 framework for feature selection in high-dimensional tabular datasets. By
 integrating multiple selection techniques in a controlled iterative
@@ -574,7 +630,8 @@ regression and classification tasks. The framework achieved lower mean
 squared error in regression and higher F1 scores in classification
 across multiple real-world datasets. These gains were especially notable
 in high-dimensional scenarios</strong>- where conventional methods
-either failed to scale or yielded suboptimal results —
+either failed to scale or yielded suboptimal results <span
+class="citation" data-cites="li2017feature"></span> —
 <strong>highlighting SmartSelect’s core advantage in handling large
 feature spaces.</strong></p>
 <p><strong>Another notable benefit of SmartSelect is its increased
@@ -599,7 +656,7 @@ normalized relative to the size of the dataset at that point. As the
 number of features decreases throughout the process, subsequent
 selection methods run significantly faster, making the overall runtime
 more efficient than it may initially seem in the graph.</p>
-<figure id="fig:feature_selection_progression_example", style="text-align: center;">
+<figure id="fig:feature_selection_progression_example">
 <img src="images/feature_selection_progression_example.png"
 style="width:70.0%" />
 <figcaption>Feature Selection Progression over Iterations -
@@ -608,16 +665,12 @@ example</figcaption>
 <p>Overall, SmartSelect presents a practical, efficient, and scalable
 solution to the feature selection problem, particularly in environments
 where high dimensionality and runtime sensitivity pose challenges.</p>
-
-                      </section>
-
-    <section id="future_work">
-<h2>7. Future Work</h2>
+<h0 id="future-work">Future Work</h0>
 <p>While SmartSelect demonstrates strong performance across a variety of
 supervised learning tasks, several important extensions remain for
 future research and development.</p>
-<h3>Support for Unsupervised
-Learning</h3>
+<h2 id="support-for-unsupervised-learning">Support for Unsupervised
+Learning</h2>
 <p>Currently, SmartSelect is designed for supervised scenarios, where
 ground-truth labels allow for clear evaluation metrics and benchmarking.
 Extending the framework to support unsupervised learning tasks presents
@@ -629,7 +682,7 @@ proxy objectives to assess feature quality in unsupervised contexts.
 Moreover, the internal selection mechanisms and benchmark model
 architecture would need to be adapted to operate in unsupervised
 pipelines.</p>
-<h3>Supervised Anomaly Detection</h3>
+<h2 id="supervised-anomaly-detection">Supervised Anomaly Detection</h2>
 <p>Another future task is adapting SmartSelect for supervised anomaly
 detection tasks. The current system is optimized for traditional
 supervised prediction, where average performance across the dataset
@@ -639,7 +692,8 @@ often considered redundant in classical prediction models and the system
 is encouraged to retain only one.</p>
 <p>However, in supervised anomaly detection, this assumption may not
 hold. Correlated features might capture subtle, rare variations in the
-data that are critical for identifying anomalies. For example, two features that are
+data that are critical for identifying anomalies <span class="citation"
+data-cites="zimek2012survey"></span>. For example, two features that are
 99% correlated may still exhibit meaningful divergence in the tail of
 their distribution—precisely the region of interest in anomaly
 detection.</p>
@@ -647,30 +701,30 @@ detection.</p>
 strategy to preserve redundant but informative patterns, and potentially
 developing new evaluation criteria that reflect anomaly-specific utility
 rather than average-case accuracy.</p>
-<h3>Multiclass Classification
-Support</h3>
+<h2 id="multiclass-classification-support">Multiclass Classification
+Support</h2>
 <p>Currently, SmartSelect works in binary classification and regression
 settings. Extending the framework to better support multiclass
 classification would involve adjustments in both evaluation metrics
 (e.g., macro/micro-averaged F1 scores) and in the benchmark model’s
 architecture and selection thresholds.</p>
-<h3>Parallel Execution of
-Selection Methods</h3>
+<h2 id="parallel-execution-of-selection-methods">Parallel Execution of
+Selection Methods</h2>
 <p>The current implementation evaluates feature selection methods
 sequentially. However, in the benchmark stage—multiple methods could be
 evaluated in parallel without exceeding runtime constraints.
 Incorporating parallel execution for compatible methods in the benchmark
 phase could significantly reduce overall processing time.</p>
-<h3>User
-Control Over Method Parameters and Regularization</h3>
+<h2 id="user-control-over-method-parameters-and-regularization">User
+Control Over Method Parameters and Regularization</h2>
 <p>In its current form, SmartSelect uses fixed thresholds for method
 behavior, such as the minimum number of features retained. Providing the
 user with greater control over parameters and regularization
 constraints, such as specifying the minimum or maximum percentage of
 features each method is allowed to retain, would make the system more
 adaptable to different use cases and domain-specific requirements.</p>
-<h3>Support for Non-Numerical
-Features</h3>
+<h2 id="support-for-non-numerical-features">Support for Non-Numerical
+Features</h2>
 <p>SmartSelect currently assumes that all input features have been
 preprocessed into numerical form. However, the transformation of
 categorical features can have a major impact on the relevance and
@@ -680,13 +734,9 @@ anomaly detection, where rare values can carry critical information.</p>
 strategies such as adaptive one-hot encoding, guided by feature
 cardinality or class imbalance, as an integral part of the selection
 process rather than a preprocessing step external to the system.</p>
-
-                            </section>
-
-    <section id="appendix">
-<h2>8. Appendix</h2>
-<h3>Full Results Across All
-Five Datasets</h3>
+<h0 id="appendix">Appendix</h0>
+<h2 id="full-results-across-all-five-datasets">Full Results Across All
+Five Datasets</h2>
 <p>This appendix presents the complete results for all five datasets
 evaluated in our experiments, including the dataset shown in the main
 paper.</p>
@@ -696,15 +746,15 @@ paper.</p>
 <li><p>Binary Classification (Target: PAM50 — LumA vs. others)</p></li>
 <li><p>Average running time of SmartSelect:  10 minutes</p></li>
 </ul>
-<figure id="fig:PAM_50_1", style="text-align: center;">
+<figure id="fig:PAM_50_1">
 <img src="images/PAM_50_1.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = PAM50</figcaption>
 </figure>
-<figure id="fig:PAM_50_2", style="text-align: center;">
+<figure id="fig:PAM_50_2">
 <img src="images/PAM_50_2.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = PAM50</figcaption>
 </figure>
-<figure id="fig:PAM_50_3", style="text-align: center;">
+<figure id="fig:PAM_50_3">
 <img src="images/PAM_50_3.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = PAM50</figcaption>
 </figure>
@@ -714,15 +764,15 @@ paper.</p>
 <li><p>Binary classification task (Target: ER)</p></li>
 <li><p>Average running time of SmartSelect:  13 minutes</p></li>
 </ul>
-<figure id="fig:SCANB_class_1", style="text-align: center;">
+<figure id="fig:SCANB_class_1">
 <img src="images/SCANB_class_1.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = ER</figcaption>
 </figure>
-<figure id="fig:SCANB_class_2", style="text-align: center;">
+<figure id="fig:SCANB_class_2">
 <img src="images/SCANB_class_2.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = ER</figcaption>
 </figure>
-<figure id="fig:SCANB_class_3", style="text-align: center;">
+<figure id="fig:SCANB_class_3">
 <img src="images/SCANB_class_3.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = ER</figcaption>
 </figure>
@@ -732,15 +782,15 @@ paper.</p>
 <li><p>Regression task (Target: Lympho)</p></li>
 <li><p>Average running time of SmartSelect:  20 minutes</p></li>
 </ul>
-<figure id="fig:SCANB_reg_1", style="text-align: center;">
+<figure id="fig:SCANB_reg_1">
 <img src="images/SCANB_reg_1.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = Lympho</figcaption>
 </figure>
-<figure id="fig:SCANB_reg_2", style="text-align: center;">
+<figure id="fig:SCANB_reg_2">
 <img src="images/SCANB_reg_2.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = Lympho</figcaption>
 </figure>
-<figure id="fig:SCANB_reg_3", style="text-align: center;">
+<figure id="fig:SCANB_reg_3">
 <img src="images/SCANB_reg_3.png" style="width:70.0%" />
 <figcaption>SCANB data, Target = Lympho</figcaption>
 </figure>
@@ -754,16 +804,16 @@ this dataset, performance differences between methods were smaller. The
 advantages of SmartSelect are more pronounced in high-dimensional
 settings.</strong></p></li>
 </ul>
-<figure id="fig:MNIST_1", style="text-align: center;">
+<figure id="fig:MNIST_1">
 <img src="images/MNIST_1.png" style="width:70.0%" />
 <figcaption>MNIST 784</figcaption>
 </figure>
-<figure id="fig:MNIST_2", style="text-align: center;">
+<figure id="fig:MNIST_2">
 <img src="images/MNIST_2.png" style="width:70.0%" />
 <figcaption>MNIST 784</figcaption>
 </figure>
 <figure id=
-        "fig:MNIST_3", style="text-align: center;">
+        "fig:MNIST_3">
 <img src="images/MNIST_3.png" style="width:70.0%" />
 <figcaption>MNIST 784</figcaption>
 </figure>
@@ -773,26 +823,18 @@ settings.</strong></p></li>
 <li><p>Binary Classification</p></li>
 <li><p>Average running time of SmartSelect:   5 seconds</p></li>
 </ul>
-<figure id="fig:GSE184773_1", style="text-align: center;">
+<figure id="fig:GSE184773_1">
 <img src="images/GSE184773_1.png" style="width:70.0%" />
 <figcaption>GSE184773 data</figcaption>
 </figure>
-<figure id="fig:GSE184773_2", style="text-align: center;">
+<figure id="fig:GSE184773_2">
 <img src="images/GSE184773_2.png" style="width:70.0%" />
 <figcaption>GSE184773 data</figcaption>
 </figure>
-<figure id="fig:GSE184773_3", style="text-align: center;">
+<figure id="fig:GSE184773_3">
 <img src="images/GSE184773_3.png" style="width:70.0%" />
 <figcaption>GSE184773 data</figcaption>
 </figure>
-
-
-
-  </main>
-
-  <footer>
-    &copy; 2025 Yehuda Baharav | SmartSelect Project
-  </footer>
 </body>
 </html>
 
